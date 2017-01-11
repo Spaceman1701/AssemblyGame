@@ -1,0 +1,67 @@
+﻿Syntax
+R = Register
+N = Number
+M = Memory Pointer
+L = Label
+#comment
+-------------------
+Registers:
+Main:
+ax, bx, cx, dx
+Stack Pointers:
+sp, bp
+General Purpose:
+R1(ax), R2(bx), R3(cx), R4(dx), R5(sp), R6(bp), R7, R8
+-------------------
+.Data
+	HEAP[64] # starts at 0
+	MOREDATA[100] # starts at 64
+.Code
+L:
+	mov R, R
+	mov R, N
+	mov R, M[offset]
+	mov M[offset], R
+	mov M[offset], N
+
+	add R, R
+	add R, N
+
+	sub R, R
+	sub R, N
+
+	div R
+	div N
+
+	mul R, R
+	mul R, N
+
+	cmp R, R
+	cmp R, N
+
+	jeq L
+	jgt L
+	jlt L
+	jge L
+	jle L
+
+	push R
+	pop R
+
+	pushf
+	popf
+
+	and R, R
+	and R, N
+
+	or R, R
+	or R, N
+
+	xor R, R
+	xor R, N
+
+	call #automatic stack framing
+	ret
+
+	procstart L
+	procend L

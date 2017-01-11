@@ -43,11 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Execute\ExcutionUnit.cs" />
+    <Compile Include="Execute\MemoryWord.cs" />
+    <Compile Include="Execute\Register.cs" />
+    <Compile Include="Compiler\CompleteInstruction.cs" />
+    <Compile Include="Compiler\Instruction.cs" />
+    <Compile Include="Compiler\InstructionInfo.cs" />
+    <Compile Include="Compiler\InstructionType.cs" />
+    <Compile Include="Compiler\MalformedInstruction.cs" />
+    <Compile Include="Compiler\NoOpInstruction.cs" />
+    <Compile Include="Compiler\Parameter\LabelParam.cs" />
+    <Compile Include="Compiler\Parameter\NumberParam.cs" />
+    <Compile Include="Compiler\ParameterType.cs" />
+    <Compile Include="Compiler\Parameter\Parameter.cs" />
+    <Compile Include="Compiler\Parameter\PointerParam.cs" />
+    <Compile Include="Compiler\Program.cs" />
+    <Compile Include="Compiler\Parameter\RegisterParam.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="IO\ConsoleIO.cs" />
+    <Compile Include="IO\ProgramLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="res\assembly.txt" />
+    <Content Include="res\syntax.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

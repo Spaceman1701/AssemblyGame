@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OldCPUEmulator
+namespace OldCPUEmulator.Compiler
 {
-    class Program
+    interface Instruction
     {
-        static void Main(string[] args)
-        {
-        }
+        InstructionType getType();
     }
 }

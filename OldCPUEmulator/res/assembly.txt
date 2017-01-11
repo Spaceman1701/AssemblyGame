@@ -1,0 +1,18 @@
+﻿
+.Data
+	HEAP[50]
+
+.Code
+procstart main
+	mov ax, 27
+	mov bx, ax
+	mov cx, bx
+	cmp cx, ax
+	jeq fine
+prob:
+	mov dx 999
+fine:
+	mov HEAP[0], ax
+	xor ax, ax
+procend main
+	
