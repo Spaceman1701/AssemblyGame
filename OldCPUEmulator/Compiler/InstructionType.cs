@@ -83,12 +83,12 @@ namespace OldCPUEmulator.Compiler
         [Params("RR, RN")] SHR
     }
 
-    public static class Extension
+    public static class InstructionTypeExtension
     {
         public static InstructionType fromString(string s)
         {
             foreach (InstructionType t in Enum.GetValues(typeof(InstructionType))) {
-                if (t.ToString().Equals(s))
+                if (t.ToString().ToLower().Equals(s))
                 {
                     return t;
                 }

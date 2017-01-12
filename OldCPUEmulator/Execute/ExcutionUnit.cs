@@ -3,6 +3,7 @@ using OldCPUEmulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,6 @@ namespace OldCPUEmulator.Execute
         private const int SI = 6;
         private const int DI = 7;
 
-
         public static int GetRegisterIndex(string name)
         {
             return registerNameMap[name];
@@ -50,6 +50,8 @@ namespace OldCPUEmulator.Execute
         private Program currentProgram;
         private uint currentLine;
         private uint nextLine;
+
+        private IDictionary<InstructionType, MethodInfo> functions;
 
         public ExcutionUnit(int memorySize)
         {
@@ -67,7 +69,26 @@ namespace OldCPUEmulator.Execute
             {
                 memory[i] = new MemoryWord();
             }
+
+            CreateMethodDictionary();
+
             ResetStack();
+        }
+
+        private void CreateMethodDictionary()
+        {
+            functions = new Dictionary<InstructionType, MethodInfo>();
+            MethodInfo[] methods = this.GetType().GetMethods();
+            foreach (MethodInfo m in methods)
+            {
+                string methodName = m.Name.ToLower();
+
+                InstructionType iType = InstructionTypeExtension.fromString(methodName);
+                if (iType != InstructionType.NONE)
+                {
+                    functions.Add(iType, m);
+                }
+            }
         }
 
         private void ResetStack()
@@ -138,35 +159,12 @@ namespace OldCPUEmulator.Execute
             {
                 return;
             }
-            Compiler.Instruction inst = currentProgram.GetInstruction(currentLine);
+            Instruction inst = currentProgram.GetInstruction(currentLine);
             if (inst.GetType() == typeof(CompleteInstruction)) {
                 CompleteInstruction instruction = (CompleteInstruction)inst;
-                switch (instruction.getType())
-                {
-                    case InstructionType.MOV: Mov(instruction.GetParams()); break;
-                    case InstructionType.ADD: Add(instruction.GetParams()); break;
-                    case InstructionType.SUB: Sub(instruction.GetParams()); break;
-                    case InstructionType.DIV: Div(instruction.GetParams()); break;
-                    case InstructionType.MUL: Mul(instruction.GetParams()); break;
-                    case InstructionType.SHL: Shl(instruction.GetParams()); break;
-                    case InstructionType.SHR: Shr(instruction.GetParams()); break;
-                    case InstructionType.CMP: Cmp(instruction.GetParams()); break;
-                    case InstructionType.JEQ: Jeq(instruction.GetParams()); break;
-                    case InstructionType.JGT: Jgt(instruction.GetParams()); break;
-                    case InstructionType.JLT: Jlt(instruction.GetParams()); break;
-                    case InstructionType.JGE: Jge(instruction.GetParams()); break;
-                    case InstructionType.JLE: Jle(instruction.GetParams()); break;
-                    case InstructionType.PUSH: Push(instruction.GetParams()); break;
-                    case InstructionType.POP: Push(instruction.GetParams()); break;
-                    case InstructionType.PUSHF: Pushf(); break;
-                    case InstructionType.POPF: Popf(); break;
-                    case InstructionType.AND: And(instruction.GetParams()); break;
-                    case InstructionType.OR: Or(instruction.GetParams()); break;
-                    case InstructionType.XOR: Xor(instruction.GetParams()); break;
-                    case InstructionType.CALL: Call(instruction.GetParams()); break;
-                    case InstructionType.RET: Ret(); break;
-                    case InstructionType.PROCEND: currentProgram = null; break;
-                }
+
+                MethodInfo method = functions[instruction.getType()];
+                method.Invoke(this, new Object[] {instruction.GetParams()});
             }
 
             currentLine = nextLine;
@@ -187,6 +185,15 @@ namespace OldCPUEmulator.Execute
             return location;
         }
 
+        public void ProcStart(Parameter[] p)
+        {
+
+        }
+
+        public void ProcEnd(Parameter[] p)
+        {
+            currentProgram = null;
+        }
 
         public void Mov(Parameter[] p)
         {
@@ -447,12 +454,12 @@ namespace OldCPUEmulator.Execute
             registers[SP].Data += 1;
         }
 
-        public void Pushf() {
+        public void Pushf(Parameter[] p) {
             memory[registers[SP].Data - 1].Data = flags.Data;
             registers[SP].Data -= 1;
         }
 
-        public void Popf()
+        public void Popf(Parameter[] p)
         {
             flags.Data = memory[registers[SP].Data].Data;
             registers[SP].Data += 1;
@@ -517,7 +524,7 @@ namespace OldCPUEmulator.Execute
             nextLine = currentProgram.TranslateCall(l);
         }
 
-        public void Ret()
+        public void Ret(Parameter[] p)
         {
             nextLine = callStack.Pop();
             registers[SP].Data = registers[BP].Data;
