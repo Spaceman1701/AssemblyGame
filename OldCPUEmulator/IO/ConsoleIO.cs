@@ -69,14 +69,14 @@ namespace OldCPUEmulator.IO
                     {
                         string[] command = input.Split(' ');
                         int reg = ExcutionUnit.GetRegisterIndex(command[1].ToLower());
-                        Console.WriteLine("Register " + command[1] + " = " + eu.registers[reg].Data);
+                        Console.WriteLine("Register " + command[1] + " = " + eu.ReadRegister(reg));
                     }
 
                     if (input.StartsWith("mem"))
                     {
                         string[] command = input.Split(' ');
                         int ptr = int.Parse(command[1]);
-                        Console.WriteLine("Memory " + ptr + " = " + eu.memory[ptr].Data);
+                        Console.WriteLine("Memory " + ptr + " = " + eu.ReadMemory(ptr));
                     }
 
                     if (input == "line")

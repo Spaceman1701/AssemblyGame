@@ -51,7 +51,7 @@ namespace OldCPUEmulator.Execute
         private uint currentLine;
         private uint nextLine;
 
-        public ExcutionUnit(ushort memorySize)
+        public ExcutionUnit(int memorySize)
         {
             registers = new Register[8];
             for (int i = 0; i < 8; i++)
@@ -75,6 +75,22 @@ namespace OldCPUEmulator.Execute
             registers[SP].Data = (ushort)memory.Length;
             registers[BP].Data = registers[SP].Data;
             callStack.Clear();
+        }
+
+        private void ClearMemory()
+        {
+            foreach (MemoryWord mw in memory)
+            {
+                mw.Data = 0;
+            }
+        }
+
+        private void ClearRegisters()
+        {
+            foreach (Register r in registers)
+            {
+                r.Data = 0;
+            }
         }
 
         public void SetProgram(Program p)
@@ -105,6 +121,16 @@ namespace OldCPUEmulator.Execute
             }
         }
 
+        public ushort ReadMemory(int ptr)
+        {
+            return memory[ptr].Data;
+        }
+
+        public ushort ReadRegister(int register)
+        {
+            return registers[register].Data;
+        }
+
         public void Step()
         {
             nextLine = currentLine + 1;
@@ -122,6 +148,8 @@ namespace OldCPUEmulator.Execute
                     case InstructionType.SUB: Sub(instruction.GetParams()); break;
                     case InstructionType.DIV: Div(instruction.GetParams()); break;
                     case InstructionType.MUL: Mul(instruction.GetParams()); break;
+                    case InstructionType.SHL: Shl(instruction.GetParams()); break;
+                    case InstructionType.SHR: Shr(instruction.GetParams()); break;
                     case InstructionType.CMP: Cmp(instruction.GetParams()); break;
                     case InstructionType.JEQ: Jeq(instruction.GetParams()); break;
                     case InstructionType.JGT: Jgt(instruction.GetParams()); break;
@@ -303,6 +331,36 @@ namespace OldCPUEmulator.Execute
         {
             registers[p1.Reg].Data = (ushort)(registers[p1.Reg].Data * p2.Num);
 
+        }
+
+
+        public void Shl(Parameter[] p)
+        {
+            Register reg = registers[((RegisterParam)p[0]).Reg];
+            ushort shift;
+            if (p[1].GetParamType() == ParameterType.REGISTER)
+            {
+                shift = registers[((RegisterParam)p[1]).Reg].Data;
+            } else
+            {
+                shift = ((NumberParam)p[1]).Num;
+            }
+            reg.Data = (ushort)(reg.Data << shift);
+        }
+
+        public void Shr(Parameter[] p)
+        {
+            Register reg = registers[((RegisterParam)p[0]).Reg];
+            ushort shift;
+            if (p[1].GetParamType() == ParameterType.REGISTER)
+            {
+                shift = registers[((RegisterParam)p[1]).Reg].Data;
+            }
+            else
+            {
+                shift = ((NumberParam)p[1]).Num;
+            }
+            reg.Data = (ushort)((uint)reg.Data >> shift);
         }
 
 

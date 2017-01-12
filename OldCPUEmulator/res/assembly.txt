@@ -4,15 +4,8 @@
 
 .Code
 procstart main
-	mov ax, 27
-	mov bx, ax
-	mov cx, bx
-	cmp cx, ax
-	jeq fine
-prob:
-	mov dx 999
-fine:
-	mov HEAP[0], ax
-	xor ax, ax
+	mov ax 2
+	shl ax 1
+	mov bx ax
 procend main
 	

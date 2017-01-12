@@ -36,6 +36,12 @@ L:
 	mul R, R
 	mul R, N
 
+	shl R, R
+	shl R, N
+
+	shr R, R
+	shr R, N
+
 	cmp R, R
 	cmp R, N
 

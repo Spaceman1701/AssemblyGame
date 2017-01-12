@@ -78,7 +78,9 @@ namespace OldCPUEmulator.Compiler
         [Params("")]RET,
         [Params("L")]PROCSTART,
         [Params("L")]PROCEND,
-        [Params("")]NONE
+        [Params("")]NONE,
+        [Params("RR, RN")] SHL,
+        [Params("RR, RN")] SHR
     }
 
     public static class Extension
