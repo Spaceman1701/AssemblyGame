@@ -48,7 +48,6 @@
     <Compile Include="Execute\Register.cs" />
     <Compile Include="Compiler\CompleteInstruction.cs" />
     <Compile Include="Compiler\Instruction.cs" />
-    <Compile Include="Compiler\InstructionInfo.cs" />
     <Compile Include="Compiler\InstructionType.cs" />
     <Compile Include="Compiler\MalformedInstruction.cs" />
     <Compile Include="Compiler\NoOpInstruction.cs" />
