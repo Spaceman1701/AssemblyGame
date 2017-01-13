@@ -45,11 +45,11 @@ namespace OldCPUEmulator.Execute
         }
 
 
-        public Register[] registers; //make a better way to access later
-        public Register flags;
-        public MemoryWord[] memory;
+        private Register[] registers; //make a better way to access later
+        private Register flags;
+        private MemoryWord[] memory;
 
-        Stack<uint> callStack;
+        private Stack<uint> callStack;
 
         private Program currentProgram;
         private uint currentLine;

@@ -10,10 +10,14 @@ Main:
 ax, bx, cx, dx
 Stack Pointers:
 sp, bp
+Index Pointers:
+si, di
 General Purpose:
-R1(ax), R2(bx), R3(cx), R4(dx), R5(sp), R6(bp), R7, R8
+R1(ax), R2(bx), R3(cx), R4(dx), R5(sp), R6(bp), R7(si), R8(di)
 -------------------
 .Data
+	const VAR 34
+
 	HEAP[64] # starts at 0
 	MOREDATA[100] # starts at 64
 .Code

@@ -12,7 +12,6 @@ namespace OldCPUEmulator.Compiler
     {
         IList<Instruction> code;
         IDictionary<string, uint> labelMap;
-        IDictionary<string, uint> varMap;
         IDictionary<string, uint> procMap;
 
         public Program(string rawProgram)
@@ -57,7 +56,8 @@ namespace OldCPUEmulator.Compiler
 
         private string[] Preprocess(string rawProgram)
         {
-            varMap = new Dictionary<string, uint>();
+            IDictionary<string, uint> arrayMap = new Dictionary<string, uint>();
+            IDictionary<string, uint> varMap = new Dictionary<string, uint>();
 
             string[] program = rawProgram.Split('\n');
             bool codeSection = false;
@@ -86,19 +86,36 @@ namespace OldCPUEmulator.Compiler
                     }
                     if (!codeSection)
                     {
-                        int sizeStart = pLine.IndexOf('[');
-                        int sizeEnd = pLine.IndexOf(']');
-                        string sizeStr = pLine.Substring(sizeStart + 1, sizeEnd - sizeStart - 1);
-                        uint size = uint.Parse(sizeStr);
-                        string name = pLine.Substring(0, sizeStart).Trim();
-                        varMap[name] = varStart;
-                        varStart += size;
-                        skiplines++;
+                        if (pLine.StartsWith("const "))
+                        {
+                            string[] var = pLine.Split(' ');
+                            uint val = uint.Parse(var[2]);
+                            varMap[var[1].Trim()] = val;
+                        } else
+                        {
+                            int sizeStart = pLine.IndexOf('[');
+                            int sizeEnd = pLine.IndexOf(']');
+                            string sizeStr = pLine.Substring(sizeStart + 1, sizeEnd - sizeStart - 1);
+                            uint size = uint.Parse(sizeStr);
+                            string name = pLine.Substring(0, sizeStart).Trim();
+                            arrayMap[name] = varStart;
+                            varStart += size;
+                            skiplines++;
+                        }
+
                     } else
                     {
+                        foreach (string varName in arrayMap.Keys)
+                        {
+                            pLine = pLine.Replace(" " + varName + "[", " " + arrayMap[varName].ToString() + "[");
+                            pLine = pLine.Replace("," + varName + "[", "," + arrayMap[varName].ToString() + "[");
+                        }
                         foreach (string varName in varMap.Keys)
                         {
-                            pLine = pLine.Replace(" " + varName + "[", " " + varMap[varName].ToString() + "[");
+                            uint val = varMap[varName];
+                            pLine = pLine.Replace(" " + varName + ",", " " + val + ",");
+                            pLine = ((pLine + ' ').Replace(" " + varName + " ", " " + val + " ")).Trim();
+                            pLine = ((pLine + ' ').Replace("," + varName + " ", " " + val + " ")).Trim();
                         }
                         int labelSep = pLine.IndexOf(':');
                         if (labelSep != -1)
