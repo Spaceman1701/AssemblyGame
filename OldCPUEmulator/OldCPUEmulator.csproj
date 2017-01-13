@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\CompileException\CompilationException.cs" />
+    <Compile Include="Compiler\CompileException\ExceptionParseException.cs" />
+    <Compile Include="Compiler\CompileException\ParameterParseException.cs" />
     <Compile Include="Compiler\InstructionParameter\NumberParam.cs" />
+    <Compile Include="Compiler\CompileException\PreprocessException.cs" />
     <Compile Include="Execute\ExcutionUnit.cs" />
     <Compile Include="Execute\MemoryWord.cs" />
     <Compile Include="Execute\Register.cs" />

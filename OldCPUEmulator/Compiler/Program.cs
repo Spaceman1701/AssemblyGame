@@ -1,4 +1,5 @@
-﻿using OldCPUEmulator.Compiler.InstructionParameter;
+﻿using OldCPUEmulator.Compiler.CompileException;
+using OldCPUEmulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +46,17 @@ namespace OldCPUEmulator.Compiler
                     }
                     if (codeSection)
                     {
-                        code.Add(ParseLine(instNum++, line));
+                        try
+                        {
+                            code.Add(ParseLine(instNum++, line));
+                        } catch (Exception e)
+                        {
+                            if (e is CompilationException)
+                            {
+                                throw;
+                            }
+                            throw new CompilationException((int)i, "Could not parse line");
+                        }
                     }
                 }
             }
@@ -89,14 +100,24 @@ namespace OldCPUEmulator.Compiler
                         if (pLine.StartsWith("const "))
                         {
                             string[] var = pLine.Split(' ');
-                            uint val = uint.Parse(var[2]);
+                            uint val;
+                            if (!uint.TryParse(var[2], out val))
+                            {
+                                throw new PreprocessException((int)line, "Could not parse variable value");
+                            }
                             varMap[var[1].Trim()] = val;
                         } else
                         {
                             int sizeStart = pLine.IndexOf('[');
                             int sizeEnd = pLine.IndexOf(']');
                             string sizeStr = pLine.Substring(sizeStart + 1, sizeEnd - sizeStart - 1);
-                            uint size = uint.Parse(sizeStr);
+
+                            uint size;
+                            if (!uint.TryParse(sizeStr, out size))
+                            {
+                                throw new PreprocessException((int)line, "Could not parse variable value");
+                            }
+
                             string name = pLine.Substring(0, sizeStart).Trim();
                             arrayMap[name] = varStart;
                             varStart += size;
@@ -105,34 +126,41 @@ namespace OldCPUEmulator.Compiler
 
                     } else
                     {
-                        foreach (string varName in arrayMap.Keys)
+                        try
                         {
-                            pLine = pLine.Replace(" " + varName + "[", " " + arrayMap[varName].ToString() + "[");
-                            pLine = pLine.Replace("," + varName + "[", "," + arrayMap[varName].ToString() + "[");
-                        }
-                        foreach (string varName in varMap.Keys)
-                        {
-                            uint val = varMap[varName];
-                            pLine = pLine.Replace(" " + varName + ",", " " + val + ",");
-                            pLine = ((pLine + ' ').Replace(" " + varName + " ", " " + val + " ")).Trim();
-                            pLine = ((pLine + ' ').Replace("," + varName + " ", " " + val + " ")).Trim();
-                        }
-                        int labelSep = pLine.IndexOf(':');
-                        if (labelSep != -1)
-                        {
-                            string label = pLine.Substring(0, labelSep);
-                            labelMap[label] = line - skiplines;
-                            pLine = pLine.Substring(labelSep + 1, pLine.Length - 1 - labelSep);
-                            if (pLine.Length <= labelSep + 1 || pLine.Substring(labelSep + 1, pLine.Length - labelSep).Trim() == "")
+                            foreach (string varName in arrayMap.Keys)
                             {
-                                skiplines++;
+                                pLine = pLine.Replace(" " + varName + "[", " " + arrayMap[varName].ToString() + "[");
+                                pLine = pLine.Replace("," + varName + "[", "," + arrayMap[varName].ToString() + "[");
                             }
-                        }
-                        if (pLine.StartsWith("procstart"))
+                            foreach (string varName in varMap.Keys)
+                            {
+                                uint val = varMap[varName];
+                                pLine = pLine.Replace(" " + varName + ",", " " + val + ",");
+                                pLine = ((pLine + ' ').Replace(" " + varName + " ", " " + val + " ")).Trim();
+                                pLine = ((pLine + ' ').Replace("," + varName + " ", " " + val + " ")).Trim();
+                            }
+                            int labelSep = pLine.IndexOf(':');
+                            if (labelSep != -1)
+                            {
+                                string label = pLine.Substring(0, labelSep);
+                                labelMap[label] = line - skiplines;
+                                pLine = pLine.Substring(labelSep + 1, pLine.Length - 1 - labelSep);
+                                if (pLine.Length <= labelSep + 1 || pLine.Substring(labelSep + 1, pLine.Length - labelSep).Trim() == "")
+                                {
+                                    skiplines++;
+                                }
+                            }
+                            if (pLine.StartsWith("procstart"))
+                            {
+                                string lbl = pLine.Split(' ')[1];
+                                procMap[lbl] = line - skiplines;
+                            }
+                        } catch (Exception e)
                         {
-                            string lbl = pLine.Split(' ')[1];
-                            procMap[lbl] = line - skiplines;
+                            throw new PreprocessException((int)line, "Could not parse variable reference");
                         }
+                        
                     }
                 } else
                 {
@@ -149,7 +177,7 @@ namespace OldCPUEmulator.Compiler
             InstructionType inst = InstructionFromString(components[0]);
             if (inst == InstructionType.NONE)
             {
-                return new MalformedInstruction("Could not parse instruction");
+                throw new CompilationException((int)lineNum, "Could not parse instruction");
             }
             int expectedParamNum = inst.NumParams();
             int numParams = 0;
@@ -157,7 +185,7 @@ namespace OldCPUEmulator.Compiler
             {
                 if (expectedParamNum != 0)
                 {
-                    return new MalformedInstruction("expected parameters");
+                    throw new CompilationException((int)lineNum, "Expected parameters");
                 }
                 return new CompleteInstruction(inst, new Parameter[] { }, lineNum);
             }
@@ -165,7 +193,7 @@ namespace OldCPUEmulator.Compiler
             numParams = paramStrings.Length;
             if (numParams != expectedParamNum)
             {
-                return new MalformedInstruction("incorrect number of parameters: expected " + expectedParamNum + ", found: " + numParams);
+                throw new CompilationException((int)lineNum,  "incorrect number of parameters: expected " + expectedParamNum + ", found: " + numParams);
             }
             Parameter[] parameters = new Parameter[numParams];
             for (int i = 0; i < paramStrings.Length; i++)
@@ -174,7 +202,7 @@ namespace OldCPUEmulator.Compiler
                 Parameter p;
                 if (type == ParameterType.NONE)
                 {
-                    return new MalformedInstruction("malformed parameter");
+                    throw new CompilationException((int)lineNum, "malformed parameter");
                 }
                 if (type == ParameterType.REGISTER)
                 {

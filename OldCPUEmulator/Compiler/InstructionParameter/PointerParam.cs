@@ -1,4 +1,5 @@
-﻿using OldCPUEmulator.Execute;
+﻿using OldCPUEmulator.Compiler.CompileException;
+using OldCPUEmulator.Execute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,10 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
 
 
             string baseString = ptr.Substring(0, startOffset);
-            baseValue = ushort.Parse(baseString);
+            if (!ushort.TryParse(baseString, out baseValue))
+            {
+                throw new ParameterParseException(0, "Could not parse memory pointer");
+            }
 
             string offsetString = ptr.Substring(startOffset + 1, endIndex - startOffset - 1);
 

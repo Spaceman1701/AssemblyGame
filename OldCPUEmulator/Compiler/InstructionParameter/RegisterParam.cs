@@ -1,4 +1,5 @@
-﻿using OldCPUEmulator.Execute;
+﻿using OldCPUEmulator.Compiler.CompileException;
+using OldCPUEmulator.Execute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,10 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
         public RegisterParam(string reg)
         {
             this.reg = ExcutionUnit.GetRegisterIndex(reg.Trim());
+            if (this.reg == -1)
+            {
+                throw new ParameterParseException(0, "Could not parse register reference");
+            }
         }
 
         public RegisterParam(int reg)

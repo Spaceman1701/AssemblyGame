@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OldCPUEmulator.Compiler.CompileException;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,10 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
 
         public NumberParam(string s)
         {
-            num = ushort.Parse(s);
+            if (ushort.TryParse(s, out num))
+            {
+                throw new ParameterParseException(0, "Could not parse immediate value");
+            }
         }
 
         public ParameterType GetParamType()
