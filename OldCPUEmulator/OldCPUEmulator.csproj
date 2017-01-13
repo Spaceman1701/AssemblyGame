@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\InstructionParameter\NumberParam.cs" />
     <Compile Include="Execute\ExcutionUnit.cs" />
     <Compile Include="Execute\MemoryWord.cs" />
     <Compile Include="Execute\Register.cs" />
@@ -51,13 +52,12 @@
     <Compile Include="Compiler\InstructionType.cs" />
     <Compile Include="Compiler\MalformedInstruction.cs" />
     <Compile Include="Compiler\NoOpInstruction.cs" />
-    <Compile Include="Compiler\Parameter\LabelParam.cs" />
-    <Compile Include="Compiler\Parameter\NumberParam.cs" />
+    <Compile Include="Compiler\InstructionParameter\LabelParam.cs" />
     <Compile Include="Compiler\ParameterType.cs" />
-    <Compile Include="Compiler\Parameter\Parameter.cs" />
-    <Compile Include="Compiler\Parameter\PointerParam.cs" />
+    <Compile Include="Compiler\InstructionParameter\Parameter.cs" />
+    <Compile Include="Compiler\InstructionParameter\PointerParam.cs" />
     <Compile Include="Compiler\Program.cs" />
-    <Compile Include="Compiler\Parameter\RegisterParam.cs" />
+    <Compile Include="Compiler\InstructionParameter\RegisterParam.cs" />
     <Compile Include="App.cs" />
     <Compile Include="IO\ConsoleIO.cs" />
     <Compile Include="IO\ProgramLoader.cs" />

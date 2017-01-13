@@ -37,6 +37,10 @@ namespace OldCPUEmulator.Execute
 
         public static int GetRegisterIndex(string name)
         {
+            if (!registerNameMap.ContainsKey(name))
+            {
+                return -1;
+            }
             return registerNameMap[name];
         }
 
@@ -183,6 +187,15 @@ namespace OldCPUEmulator.Execute
                 location += ptr.FlatOffset;
             }
             return location;
+        }
+
+        private ushort EvaluateValue(Parameter p)
+        {
+            if (p.GetParamType() == ParameterType.NUMBER)
+            {
+                return ((NumberParam)p).Num;
+            }
+            return registers[((RegisterParam)p).Reg].Data;
         }
 
         public void ProcStart(Parameter[] p)
@@ -528,6 +541,40 @@ namespace OldCPUEmulator.Execute
         {
             nextLine = callStack.Pop();
             registers[SP].Data = registers[BP].Data;
+        }
+
+        public void Inc(Parameter[] p)
+        {
+            if (p[0].GetParamType() == ParameterType.REGISTER)
+            {
+                registers[((RegisterParam)p[0]).Reg].Data++;
+            } else
+            {
+                ushort ptr = DereferencePtr((PointerParam)p[0]);
+                memory[ptr].Data++;
+            }
+        }
+
+        public void Dec(Parameter[] p)
+        {
+            if (p[0].GetParamType() == ParameterType.REGISTER)
+            {
+                registers[((RegisterParam)p[0]).Reg].Data--;
+            }
+            else
+            {
+                ushort ptr = DereferencePtr((PointerParam)p[0]);
+                memory[ptr].Data--;
+            }
+        }
+
+        public void Loop(Parameter[] p)
+        {
+            if (registers[CX].Data != 0)
+            {
+                registers[CX].Data--;
+                Jmp((LabelParam)p[0]);
+            }
         }
 
     }

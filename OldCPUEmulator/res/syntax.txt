@@ -69,5 +69,13 @@ L:
 	call #automatic stack framing
 	ret
 
+	inc R
+	inc M
+
+	dec R
+	dec M
+
+	loop L
+
 	procstart L
 	procend L

@@ -80,7 +80,10 @@ namespace OldCPUEmulator.Compiler
         [Params("L")]PROCEND,
         [Params("")]NONE,
         [Params("RR, RN")] SHL,
-        [Params("RR, RN")] SHR
+        [Params("RR, RN")] SHR,
+        [Params("R M")] INC,
+        [Params("R M")] DEC,
+        [Params("L")] LOOP
     }
 
     public static class InstructionTypeExtension
