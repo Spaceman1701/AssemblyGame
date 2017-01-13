@@ -16,7 +16,7 @@ General Purpose:
 R1(ax), R2(bx), R3(cx), R4(dx), R5(sp), R6(bp), R7(si), R8(di)
 -------------------
 .Data
-	const VAR 34
+	const VAR 34 # compiles to immediate
 
 	HEAP[64] # starts at 0
 	MOREDATA[100] # starts at 64
