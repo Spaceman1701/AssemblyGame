@@ -27,7 +27,7 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
             string baseString = ptr.Substring(0, startOffset);
             if (!ushort.TryParse(baseString, out baseValue))
             {
-                throw new ParameterParseException(0, "Could not parse memory pointer");
+                throw new ParameterParseException(-1, "Could not parse memory pointer");
             }
 
             string offsetString = ptr.Substring(startOffset + 1, endIndex - startOffset - 1);

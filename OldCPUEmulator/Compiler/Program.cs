@@ -53,6 +53,11 @@ namespace OldCPUEmulator.Compiler
                         {
                             if (e is CompilationException)
                             {
+                                CompilationException ce = (CompilationException)e;
+                                if (ce.Line == -1)
+                                {
+                                    ce.Line = (int)i;
+                                }
                                 throw;
                             }
                             throw new CompilationException((int)i, "Could not parse line");

@@ -17,7 +17,7 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
             this.reg = ExcutionUnit.GetRegisterIndex(reg.Trim());
             if (this.reg == -1)
             {
-                throw new ParameterParseException(0, "Could not parse register reference");
+                throw new ParameterParseException(-1, "Could not parse register reference");
             }
         }
 

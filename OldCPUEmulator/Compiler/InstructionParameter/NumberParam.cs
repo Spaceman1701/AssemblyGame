@@ -15,7 +15,7 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
         {
             if (ushort.TryParse(s, out num))
             {
-                throw new ParameterParseException(0, "Could not parse immediate value");
+                throw new ParameterParseException(-1, "Could not parse immediate value");
             }
         }
 
