@@ -174,6 +174,10 @@ namespace Emulator.Execute
             currentLine = nextLine;
         }
 
+        public void RegisterInterrupt(ushort key, InteruptDelegate id)
+        {
+            interuptMap[key] = id;
+        }
 
         private ushort DereferencePtr(PointerParam ptr)
         {
