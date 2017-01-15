@@ -8,10 +8,10 @@ procstart main
 	mov cx, 5
 head:
 	shl ax, 1
-	mov HEAP[ax], ax
+	mov HEAP[cx], ax
 	cmp cx, 1
 	jeq end
 	loop head
 end:
-	mov bx, HEAD[4]
+	mov bx, HEAP[4]
 procend main

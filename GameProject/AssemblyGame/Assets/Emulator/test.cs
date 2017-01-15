@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using OldCPUEmulator.Compiler;
-using OldCPUEmulator.IO;
-using OldCPUEmulator.Execute;
+using Emulator.Compiler;
+using Emulator.IO;
+using Emulator.Execute;
 
 public class test : MonoBehaviour {
 
