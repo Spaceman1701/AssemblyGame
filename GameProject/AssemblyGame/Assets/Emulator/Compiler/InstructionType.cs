@@ -81,7 +81,8 @@ namespace Emulator.Compiler
         [Params("RR, RN")] SHR,
         [Params("R M")] INC,
         [Params("R M")] DEC,
-        [Params("L")] LOOP
+        [Params("L")] LOOP,
+        [Params("N")] INT
     }
 
     public static class InstructionTypeExtension

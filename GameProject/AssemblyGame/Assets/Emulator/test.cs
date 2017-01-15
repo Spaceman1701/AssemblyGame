@@ -7,7 +7,7 @@ using Emulator.Execute;
 
 public class test : MonoBehaviour {
 
-    public ExcutionUnit eu;
+    public ExecutionUnit eu;
     public ushort ax;
     public int numSteps;
     public bool shouldStep = false;
@@ -15,7 +15,7 @@ public class test : MonoBehaviour {
 	void Start () {
         string program = ProgramLoader.LoadProgram(Application.dataPath + "/Emulator/assembly.txt");
         Program p = new Program(program);
-        eu = new ExcutionUnit(600);
+        eu = new ExecutionUnit(600);
         eu.SetProgram(p);  
 	}
 	

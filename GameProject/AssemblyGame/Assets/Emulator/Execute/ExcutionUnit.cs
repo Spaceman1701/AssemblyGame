@@ -7,22 +7,13 @@ using System.Reflection;
 
 namespace Emulator.Execute
 {
-    public class ExcutionUnit
+    public class ExecutionUnit
     {
+        public delegate void InteruptDelegate(ExecutionUnit eu);
+
         private const int GREATER_THAN = 2;
         private const int LESS_THAN = 1;
         private const int EQUAL_TO = 0;
-        public static IDictionary<string, int> registerNameMap = new Dictionary<string, int>
-        {
-            ["ax"] = 0,
-            ["bx"] = 1,
-            ["cx"] = 2,
-            ["dx"] = 3,
-            ["sp"] = 4,
-            ["bp"] = 5,
-            ["si"] = 6,
-            ["di"] = 7
-        };
 
         private const int AX = 0;
         private const int BX = 1;
@@ -35,11 +26,18 @@ namespace Emulator.Execute
 
         public static int GetRegisterIndex(string name)
         {
-            if (!registerNameMap.ContainsKey(name))
+            switch (name)
             {
-                return -1;
+                case "ax": return 0;
+                case "bx": return 1;
+                case "cx": return 2;
+                case "dx": return 3;
+                case "sp": return 4;
+                case "bp": return 5;
+                case "si": return 6;
+                case "di": return 7;
+                default: return -1;
             }
-            return registerNameMap[name];
         }
 
 
@@ -55,7 +53,9 @@ namespace Emulator.Execute
 
         private IDictionary<InstructionType, MethodInfo> functions;
 
-        public ExcutionUnit(int memorySize)
+        private IDictionary<ushort, InteruptDelegate> interuptMap;
+
+        public ExecutionUnit(int memorySize)
         {
             registers = new Register[8];
             for (int i = 0; i < 8; i++)
@@ -71,6 +71,8 @@ namespace Emulator.Execute
             {
                 memory[i] = new MemoryWord();
             }
+
+            interuptMap = new Dictionary<ushort, InteruptDelegate>();
 
             CreateMethodDictionary();
 
@@ -575,5 +577,10 @@ namespace Emulator.Execute
             }
         }
 
+        public void Int(Parameter[] p)
+        {
+            NumberParam n = (NumberParam)p[0];
+            interuptMap[n.Num].Invoke(this);
+        }
     }
 }

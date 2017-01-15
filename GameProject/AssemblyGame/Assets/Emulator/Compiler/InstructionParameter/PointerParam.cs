@@ -8,12 +8,9 @@ namespace Emulator.Compiler.InstructionParameter
         private int register = -1;
         private ushort baseValue;
         private ushort offset;
-        private string ptr;
         
         public PointerParam(string ptr)
         {
-            this.ptr = ptr;
-            int offsetIndex = ptr.Length - ptr.IndexOf('[');
             int startOffset = ptr.IndexOf('[');
             int endIndex = ptr.Length - 1;
             int length = ptr.Length;
@@ -41,7 +38,6 @@ namespace Emulator.Compiler.InstructionParameter
 
         public override string ToString()
         {
-            ushort printVal = baseValue;
             if (HasRegisterOffset())
             {
                 return baseValue.ToString() + "+REG:" + register;

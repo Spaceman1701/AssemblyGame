@@ -10,7 +10,7 @@ namespace Emulator.Compiler.InstructionParameter
 
         public RegisterParam(string reg)
         {
-            this.reg = ExcutionUnit.GetRegisterIndex(reg.Trim());
+            this.reg = ExecutionUnit.GetRegisterIndex(reg.Trim());
             if (this.reg == -1)
             {
                 throw new ParameterParseException(-1, "Could not parse register reference");

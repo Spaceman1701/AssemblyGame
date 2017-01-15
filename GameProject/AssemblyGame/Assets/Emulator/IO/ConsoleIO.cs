@@ -8,11 +8,11 @@ namespace Emulator.IO
 {
     class ConsoleIO
     {
-        private ExcutionUnit eu;
+        private ExecutionUnit eu;
 
         private IDictionary<string, Program> programs;
 
-        public ConsoleIO(ExcutionUnit eu)
+        public ConsoleIO(ExecutionUnit eu)
         {
             this.eu = eu;
             programs = new Dictionary<string, Program>();
@@ -66,7 +66,7 @@ namespace Emulator.IO
                     if (input.StartsWith("reg"))
                     {
                         string[] command = input.Split(' ');
-                        int reg = ExcutionUnit.GetRegisterIndex(command[1].ToLower());
+                        int reg = ExecutionUnit.GetRegisterIndex(command[1].ToLower());
                         Console.WriteLine("Register " + command[1] + " = " + eu.ReadRegister(reg));
                     }
 
