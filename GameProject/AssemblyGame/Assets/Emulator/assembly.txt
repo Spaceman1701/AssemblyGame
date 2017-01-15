@@ -1,0 +1,17 @@
+.Data
+	const NUM 9
+	HEAP[100]
+.Code
+procstart main
+	mov ax, NUM
+	mov HEAP[0], ax
+	mov cx, 5
+head:
+	shl ax, 1
+	mov HEAP[ax], ax
+	cmp cx, 1
+	jeq end
+	loop head
+end:
+	mov bx, HEAD[4]
+procend main

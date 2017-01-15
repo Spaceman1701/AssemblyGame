@@ -1,12 +1,5 @@
-﻿using OldCPUEmulator.Compiler;
-using OldCPUEmulator.Execute;
+﻿using OldCPUEmulator.Execute;
 using OldCPUEmulator.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace OldCPUEmulator
 {

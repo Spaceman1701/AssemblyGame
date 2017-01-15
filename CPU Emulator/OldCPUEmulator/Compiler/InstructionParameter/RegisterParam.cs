@@ -1,14 +1,10 @@
 ﻿using OldCPUEmulator.Compiler.CompileException;
 using OldCPUEmulator.Execute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace OldCPUEmulator.Compiler.InstructionParameter
 {
-    class RegisterParam : Parameter
+    public class RegisterParam : Parameter
     {
         private int reg;
 

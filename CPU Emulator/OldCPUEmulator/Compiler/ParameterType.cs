@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace OldCPUEmulator.Compiler
 {
@@ -14,7 +10,7 @@ namespace OldCPUEmulator.Compiler
 
     public static class ParameterExtension
     {
-        private static Regex pointerRegex = new Regex(@"\[(.+)\]");
+        private static Regex pointerRegex = new Regex(@"\[(.*?)\]");
         private static string[] regNames = { "ax", "bx", "cx", "dx", "sp", "bp", "si", "di"};
         public static bool isType(this ParameterType t, string pString)
         {
@@ -46,20 +42,7 @@ namespace OldCPUEmulator.Compiler
 
         private static bool isPointer(string pString)
         {
-            if (pointerRegex.IsMatch(pString))
-            {
-                string p = pointerRegex.Match(pString).Groups[0].ToString().Trim();
-                ushort n;
-                if (ushort.TryParse(p.Substring(1, p.Length - 2), out n))
-                {
-                    return true;
-                }
-                if (isReg(p))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return pointerRegex.IsMatch(pString);
         }
 
         private static bool isLabal(string pString) //improve later

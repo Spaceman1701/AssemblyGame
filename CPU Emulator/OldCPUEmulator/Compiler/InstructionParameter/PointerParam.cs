@@ -1,14 +1,9 @@
 ﻿using OldCPUEmulator.Compiler.CompileException;
-using OldCPUEmulator.Execute;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OldCPUEmulator.Compiler.InstructionParameter
 {
-    class PointerParam : Parameter
+    public class PointerParam : Parameter
     {
         private int register = -1;
         private ushort baseValue;
@@ -34,6 +29,7 @@ namespace OldCPUEmulator.Compiler.InstructionParameter
 
             if (!ushort.TryParse(offsetString, out offset))
             {
+                Console.WriteLine("reg param");
                 register = new RegisterParam(offsetString).Reg;
             }
         }

@@ -1,19 +1,15 @@
 ﻿using OldCPUEmulator.Compiler.CompileException;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace OldCPUEmulator.Compiler.InstructionParameter
 {
-    class NumberParam : Parameter
+    public class NumberParam : Parameter
     {
         private ushort num;
 
         public NumberParam(string s)
         {
-            if (ushort.TryParse(s, out num))
+            if (!ushort.TryParse(s, out num))
             {
                 throw new ParameterParseException(-1, "Could not parse immediate value");
             }

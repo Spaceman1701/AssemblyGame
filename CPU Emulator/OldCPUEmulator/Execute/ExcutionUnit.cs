@@ -2,14 +2,12 @@
 using OldCPUEmulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace OldCPUEmulator.Execute
 {
-    class ExcutionUnit
+    public class ExcutionUnit
     {
         private const int GREATER_THAN = 2;
         private const int LESS_THAN = 1;
