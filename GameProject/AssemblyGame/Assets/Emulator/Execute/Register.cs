@@ -2,7 +2,7 @@
 
 namespace Emulator.Execute
 {
-    class Register
+    public class Register
     {
         private ushort data;
         

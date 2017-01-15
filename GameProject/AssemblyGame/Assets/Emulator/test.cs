@@ -24,7 +24,6 @@ public class test : MonoBehaviour {
 		if (shouldStep)
         {
             eu.Step();
-            ax = eu.ReadRegister(0);
             shouldStep = false;
             numSteps++;
         }

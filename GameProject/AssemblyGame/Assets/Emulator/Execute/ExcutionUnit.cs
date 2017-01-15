@@ -146,14 +146,14 @@ namespace Emulator.Execute
             }
         }
 
-        public ushort ReadMemory(int ptr)
+        public MemoryWord ReadMemory(int ptr)
         {
-            return memory[ptr].Data;
+            return memory[ptr];
         }
 
-        public ushort ReadRegister(int register)
+        public Register ReadRegister(int register)
         {
-            return registers[register].Data;
+            return registers[register];
         }
 
         public void Step()
@@ -416,7 +416,7 @@ namespace Emulator.Execute
         {
             if (flags.Data == EQUAL_TO)
             {
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 
@@ -424,7 +424,7 @@ namespace Emulator.Execute
         {
             if (flags.Data == GREATER_THAN)
             {
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 
@@ -432,7 +432,7 @@ namespace Emulator.Execute
         {
             if (flags.Data == LESS_THAN)
             {
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 
@@ -440,7 +440,7 @@ namespace Emulator.Execute
         {
             if (flags.Data == GREATER_THAN || flags.Data == EQUAL_TO)
             {
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 
@@ -448,13 +448,21 @@ namespace Emulator.Execute
         {
             if (flags.Data == LESS_THAN || flags.Data == EQUAL_TO)
             {
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 
-        private void Jmp(LabelParam p)
+        public void Jmp(Parameter[] p)
         {
-            nextLine = currentProgram.TranslateLabel(p);
+            nextLine = currentProgram.TranslateLabel((LabelParam)p[0]);
+        }
+
+        public void Jnq(Parameter[] p)
+        {
+            if (flags.Data != EQUAL_TO)
+            {
+                Jmp(p);
+            }
         }
 
 
@@ -577,7 +585,7 @@ namespace Emulator.Execute
             if (registers[CX].Data != 0)
             {
                 registers[CX].Data--;
-                Jmp((LabelParam)p[0]);
+                Jmp(p);
             }
         }
 

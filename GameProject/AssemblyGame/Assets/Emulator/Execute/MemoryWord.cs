@@ -2,7 +2,7 @@
 
 namespace Emulator.Execute
 {
-    class MemoryWord
+    public class MemoryWord
     {
         private ushort data;
 
