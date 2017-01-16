@@ -455,6 +455,10 @@ namespace Emulator.Execute
         public void Jmp(Parameter[] p)
         {
             nextLine = currentProgram.TranslateLabel((LabelParam)p[0]);
+            if (currentProgram.GetInstruction(nextLine).getType() != InstructionType.MOV)
+            {
+                throw new Exception(currentProgram.GetInstruction(nextLine).getType().ToString());
+            }
         }
 
         public void Jnq(Parameter[] p)

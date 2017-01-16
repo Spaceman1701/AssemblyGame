@@ -1,34 +1,31 @@
 .Data
-	const NUM 9
+	const AVAR 4
 	INPUT[2]
 .Code
 procstart main
-start:
+start: 
 	mov ax, 0
 	mov bx, 1
 	int 1
-
 	mov ax, 0[0]
 	mov bx, 0[1]
-	
 	cmp ax, 1
 	jeq left_start
 	cmp bx, 1
 	jeq right_start
-stop:
+stop: 
 	mov ax, 0
 	mov bx, 0
 	int 0
 	jmp start
-left_start:
+left_start: 
 	mov ax, 1
 	mov bx, 1000
 	int 0
 	jmp start
-right_start:
-	mov ax, 1
+right_start: 
+	mov ax, 0
 	mov bx, 1000
 	int 0
 	jmp start
-
 procend main

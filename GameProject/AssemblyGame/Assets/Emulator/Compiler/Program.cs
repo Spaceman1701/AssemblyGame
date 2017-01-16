@@ -108,6 +108,7 @@ namespace Emulator.Compiler
                                 throw new PreprocessException((int)line, "Could not parse variable value");
                             }
                             varMap[var[1].Trim()] = val;
+                            skiplines++;
                         } else
                         {
                             int sizeStart = pLine.IndexOf('[');
