@@ -23,12 +23,19 @@ stop:
 	jmp start
 left_start: 
 	mov ax, LEFT
-	mov bx, 10000
-	int 0
+	push ax
+	call move
 	jmp start
 right_start: 
 	mov ax, RIGHT
-	mov bx, 10000
-	int 0
+	push ax
+	call move
 	jmp start
 procend main
+
+procstart move
+	pop ax
+	mov bx, 10000
+	int 0
+	ret
+procend mov
