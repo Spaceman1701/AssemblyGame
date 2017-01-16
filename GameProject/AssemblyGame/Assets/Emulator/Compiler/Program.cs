@@ -127,7 +127,7 @@ namespace Emulator.Compiler
                             skiplines++;
                         }
 
-                    } else
+                    } else //codesection
                     {
                         try
                         {
@@ -135,6 +135,7 @@ namespace Emulator.Compiler
                             {
                                 pLine = pLine.Replace(" " + varName + "[", " " + arrayMap[varName].ToString() + "[");
                                 pLine = pLine.Replace("," + varName + "[", "," + arrayMap[varName].ToString() + "[");
+                                pLine = pLine.Replace("(" + varName + "[", "(" + arrayMap[varName].ToString() + "[");
                             }
                             foreach (string varName in varMap.Keys)
                             {

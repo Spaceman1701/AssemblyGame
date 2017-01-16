@@ -167,7 +167,7 @@ namespace Emulator.Execute
             if (inst.GetType() == typeof(CompleteInstruction)) {
                 CompleteInstruction instruction = (CompleteInstruction)inst;
 
-                MethodInfo method = functions[instruction.getType()];
+                MethodInfo method = functions[instruction.GetInstructionType()];
                 method.Invoke(this, new Object[] {instruction.GetParams()});
             }
 
@@ -455,9 +455,9 @@ namespace Emulator.Execute
         public void Jmp(Parameter[] p)
         {
             nextLine = currentProgram.TranslateLabel((LabelParam)p[0]);
-            if (currentProgram.GetInstruction(nextLine).getType() != InstructionType.MOV)
+            if (currentProgram.GetInstruction(nextLine).GetInstructionType() != InstructionType.MOV)
             {
-                throw new Exception(currentProgram.GetInstruction(nextLine).getType().ToString());
+                throw new Exception(currentProgram.GetInstruction(nextLine).GetInstructionType().ToString());
             }
         }
 

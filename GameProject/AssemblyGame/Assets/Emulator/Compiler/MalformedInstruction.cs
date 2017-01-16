@@ -12,7 +12,7 @@ namespace Emulator.Compiler
             this.message = message;
         }
 
-        public InstructionType getType()
+        public InstructionType GetInstructionType()
         {
             return InstructionType.NONE;
         }

@@ -21,7 +21,7 @@ namespace Emulator.Compiler
             return parameters;
         }
 
-        public InstructionType getType()
+        public InstructionType GetInstructionType()
         {
             return type;
         }

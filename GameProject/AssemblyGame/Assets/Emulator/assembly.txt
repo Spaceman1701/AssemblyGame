@@ -1,17 +1,20 @@
 .Data
-	const AVAR 4
+	const TRUE 1
+	const LEFT 1
+	const RIGHT 0
+
 	INPUT[2]
 .Code
 procstart main
 start: 
-	mov ax, 0
-	mov bx, 1
+	mov ax, (INPUT[0])
+	mov bx, (INPUT[1])
 	int 1
-	mov ax, 0[0]
-	mov bx, 0[1]
-	cmp ax, 1
+	mov ax, INPUT[0]
+	mov bx, INPUT[1]
+	cmp ax, TRUE
 	jeq left_start
-	cmp bx, 1
+	cmp bx, TRUE
 	jeq right_start
 stop: 
 	mov ax, 0
@@ -19,13 +22,13 @@ stop:
 	int 0
 	jmp start
 left_start: 
-	mov ax, 1
-	mov bx, 1000
+	mov ax, LEFT
+	mov bx, 10000
 	int 0
 	jmp start
 right_start: 
-	mov ax, 0
-	mov bx, 1000
+	mov ax, RIGHT
+	mov bx, 10000
 	int 0
 	jmp start
 procend main
