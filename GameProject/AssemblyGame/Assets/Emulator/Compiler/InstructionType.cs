@@ -74,6 +74,7 @@ namespace Emulator.Compiler
         [Params("RR, RN")]AND,
         [Params("RR, RN")]OR,
         [Params("RR, RN")]XOR,
+        [Params("R")]NOT,
         [Params("L")]CALL,
         [Params("")]RET,
         [Params("L")]PROCSTART,
@@ -81,8 +82,8 @@ namespace Emulator.Compiler
         [Params("")]NONE,
         [Params("RR, RN")] SHL,
         [Params("RR, RN")] SHR,
-        [Params("R M")] INC,
-        [Params("R M")] DEC,
+        [Params("R, M")] INC,
+        [Params("R, M")] DEC,
         [Params("L")] LOOP,
         [Params("N")] INT
     }

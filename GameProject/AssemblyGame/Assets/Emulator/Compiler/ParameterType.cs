@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Emulator.Compiler

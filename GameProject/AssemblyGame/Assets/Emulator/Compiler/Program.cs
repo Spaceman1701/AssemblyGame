@@ -197,7 +197,7 @@ namespace Emulator.Compiler
             numParams = paramStrings.Length;
             if (numParams != expectedParamNum)
             {
-                throw new CompilationException((int)lineNum,  "incorrect number of parameters: expected " + expectedParamNum + ", found: " + numParams);
+                throw new CompilationException((int)lineNum,  inst + ": incorrect number of parameters: expected " + expectedParamNum + ", found: " + numParams);
             }
             Parameter[] parameters = new Parameter[numParams];
             for (int i = 0; i < paramStrings.Length; i++)

@@ -25,16 +25,20 @@ left_start:
 	mov ax, LEFT
 	push ax
 	call move
+	pop ax
 	jmp start
 right_start: 
 	mov ax, RIGHT
 	push ax
 	call move
+	pop ax
 	jmp start
 procend main
 
 procstart move
-	pop ax
+	mov dx, bp
+	inc dx
+	mov ax, 0[dx]
 	mov bx, 10000
 	int 0
 	ret

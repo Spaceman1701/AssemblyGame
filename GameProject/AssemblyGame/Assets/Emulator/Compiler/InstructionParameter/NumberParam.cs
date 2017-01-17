@@ -1,4 +1,5 @@
 ﻿using Emulator.Compiler.CompileException;
+using System.Globalization;
 using UnityEngine;
 
 namespace Emulator.Compiler.InstructionParameter
@@ -33,7 +34,7 @@ namespace Emulator.Compiler.InstructionParameter
                 num = (ushort)(baseValue + offset);
             } else if (!ushort.TryParse(s, out num))
             {
-                throw new ParameterParseException(-1, "Could not parse immediate value");
+                throw new ParameterParseException(-1, "Could not parse immediate value " + s);
             }
         }
 

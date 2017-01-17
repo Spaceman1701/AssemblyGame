@@ -3,7 +3,7 @@ using Emulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-
+using UnityEngine;
 
 namespace Emulator.Execute
 {
@@ -54,6 +54,10 @@ namespace Emulator.Execute
         private IDictionary<InstructionType, MethodInfo> functions;
 
         private IDictionary<ushort, InteruptDelegate> interuptMap;
+
+
+        int numCalls;
+        int numPops;
 
         public ExecutionUnit(int memorySize)
         {
@@ -168,7 +172,7 @@ namespace Emulator.Execute
                 CompleteInstruction instruction = (CompleteInstruction)inst;
 
                 MethodInfo method = functions[instruction.GetInstructionType()];
-                method.Invoke(this, new Object[] {instruction.GetParams()});
+                method.Invoke(this, new System.Object[] {instruction.GetParams()});
             }
 
             currentLine = nextLine;
@@ -540,10 +544,19 @@ namespace Emulator.Execute
             registers[p1.Reg].Data = (ushort)(v1 ^ v2);
         }
 
+
+        public void Not(Parameter[] p)
+        {
+            RegisterParam p1 = (RegisterParam)p[0];
+            registers[p1.Reg].Data = (ushort)~registers[p1.Reg].Data;
+        }
+
         
         public void Call(Parameter[] p0)
         {
             LabelParam l = (LabelParam)p0[0];
+            registers[SP].Data--;
+            memory[registers[SP].Data].Data = registers[BP].Data; //push bp
             registers[BP].Data = registers[SP].Data;
             callStack.Push(nextLine);
             nextLine = currentProgram.TranslateCall(l);
@@ -552,7 +565,9 @@ namespace Emulator.Execute
         public void Ret(Parameter[] p)
         {
             nextLine = callStack.Pop();
-            registers[SP].Data = registers[BP].Data;
+            registers[SP].Data = registers[BP].Data; //new top of the stack
+            registers[BP].Data = memory[registers[SP].Data].Data;
+            registers[SP].Data++; //pop bp
         }
 
         public void Inc(Parameter[] p)
