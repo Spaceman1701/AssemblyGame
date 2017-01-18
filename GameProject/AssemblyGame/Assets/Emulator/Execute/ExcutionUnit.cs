@@ -183,7 +183,7 @@ namespace Emulator.Execute
             interuptMap[key] = id;
         }
 
-        private ushort DereferencePtr(PointerParam ptr)
+        private ushort DereferenceNewPtr(PointerParam ptr)
         {
             ushort location = (ushort)ptr.Base;
             if (ptr.HasRegisterOffset())
@@ -195,6 +195,18 @@ namespace Emulator.Execute
                 location += ptr.FlatOffset;
             }
             return location;
+        }
+
+        private ushort DereferencePtr(PointerParam ptr)
+        {
+            ushort v = ptr.Base;
+
+            foreach (int reg in ptr.Registers)
+            {
+                v += registers[reg].Data;
+            }
+
+            return v;
         }
 
         private ushort EvaluateValue(Parameter p)
@@ -560,6 +572,7 @@ namespace Emulator.Execute
             registers[BP].Data = registers[SP].Data;
             callStack.Push(nextLine);
             nextLine = currentProgram.TranslateCall(l);
+            Debug.Log(currentProgram.GetInstruction(nextLine + 1));
         }
 
         public void Ret(Parameter[] p)

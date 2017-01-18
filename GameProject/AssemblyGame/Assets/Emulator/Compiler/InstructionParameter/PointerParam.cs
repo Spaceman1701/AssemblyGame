@@ -1,5 +1,8 @@
 ﻿using Emulator.Compiler.CompileException;
+using Emulator.Execute;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Emulator.Compiler.InstructionParameter
 {
@@ -8,11 +11,20 @@ namespace Emulator.Compiler.InstructionParameter
         private int register = -1;
         private ushort baseValue;
         private ushort offset;
-        
+
+        private List<int> reg;
+
         public PointerParam(string ptr)
         {
+            ptr = ptr.Trim();
+            reg = new List<int>();
+            if (ptr[0] == '[')
+            {
+                ParseNew(ptr);
+                return;
+            }
             int startOffset = ptr.IndexOf('[');
-            int endIndex = ptr.Length - 1;
+            int endIndex = ptr.Length - 2;
             int length = ptr.Length;
 
 
@@ -21,14 +33,74 @@ namespace Emulator.Compiler.InstructionParameter
             {
                 throw new ParameterParseException(-1, "Could not parse memory pointer");
             }
+            Debug.Log(endIndex - startOffset + 1);
 
-            string offsetString = ptr.Substring(startOffset + 1, endIndex - startOffset - 1);
+            string offsetString = ptr.Substring(startOffset + 1, endIndex - startOffset);
 
             if (!ushort.TryParse(offsetString, out offset))
             {
-                Console.WriteLine("reg param");
+                Debug.Log("pointer reg: " + offsetString);
                 register = new RegisterParam(offsetString).Reg;
+                reg.Add(register);
             }
+        }
+
+        private void ParseNew(string ptr)
+        {
+            ptr = ptr.Trim().Substring(1, ptr.Length - 1);
+            string exp = CleanExpression(ptr);
+
+            reg = new List<int>();
+            baseValue = 0;
+            if (exp.Contains("+"))
+            {
+                string[] split = exp.Split('+');
+                foreach (string s in split)
+                {
+                    Debug.Log(s);
+                    if (ExecutionUnit.GetRegisterIndex(s) != -1)
+                    {
+                        reg.Add(ExecutionUnit.GetRegisterIndex(s));
+                    } else
+                    {
+                        baseValue += ushort.Parse(s);
+                    }
+                }
+            } else if (exp.Contains("-"))
+            {
+                string[] split = exp.Split('-');
+                int numReg = 0;
+                foreach (string s in split)
+                {
+                    if (ExecutionUnit.GetRegisterIndex(s) != -1)
+                    {
+                        if (numReg > 0)
+                        {
+                            throw new ParameterParseException(-1, "Cannot subtract registers");
+                        }
+                        reg.Add(ExecutionUnit.GetRegisterIndex(s));
+                    }
+                    else
+                    {
+                        baseValue -= ushort.Parse(s);
+                    }
+                }
+            }
+        }
+
+        public IList<int> Registers
+        {
+            get
+            {
+                return reg;
+            }
+        }
+
+        private string CleanExpression(string exp)
+        {
+            exp = exp.Replace(" +", "+").Replace("+ ", "+");
+            exp = exp.Replace(" -", "-").Replace("- ", "-");
+            return exp;
         }
 
         public ParameterType GetParamType()

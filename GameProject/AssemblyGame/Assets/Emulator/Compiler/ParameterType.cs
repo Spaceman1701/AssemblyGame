@@ -12,7 +12,6 @@ namespace Emulator.Compiler
     public static class ParameterExtension
     {
         private static Regex pointerRegex = new Regex(@"\[(.*?)\]");
-        private static Regex referenceRegex = new Regex(@"\((d+\[(d+)\])\)");
         private static string[] regNames = { "ax", "bx", "cx", "dx", "sp", "bp", "si", "di"};
         public static bool isType(this ParameterType t, string pString)
         {
@@ -51,6 +50,10 @@ namespace Emulator.Compiler
             if (pString.Contains("("))
             {
                 return false;
+            }
+            if (pString[0] == '[')
+            {
+                return true;
             }
             return pointerRegex.IsMatch(pString);
         }

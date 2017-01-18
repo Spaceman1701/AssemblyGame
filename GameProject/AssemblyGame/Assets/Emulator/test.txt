@@ -1,0 +1,6 @@
+.Data
+.Code
+
+procstart main
+	mov [1 + 1], 2
+procend main

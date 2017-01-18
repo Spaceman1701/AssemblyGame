@@ -1,6 +1,6 @@
 ﻿using Emulator.Compiler.CompileException;
 using Emulator.Execute;
-
+using UnityEngine;
 
 namespace Emulator.Compiler.InstructionParameter
 {
@@ -10,10 +10,10 @@ namespace Emulator.Compiler.InstructionParameter
 
         public RegisterParam(string reg)
         {
-            this.reg = ExecutionUnit.GetRegisterIndex(reg.Trim());
+            this.reg = ExecutionUnit.GetRegisterIndex(reg.Trim().ToLower());
             if (this.reg == -1)
             {
-                throw new ParameterParseException(-1, "Could not parse register reference");
+                throw new ParameterParseException(-1, "Could not parse register reference: " + reg);
             }
         }
 

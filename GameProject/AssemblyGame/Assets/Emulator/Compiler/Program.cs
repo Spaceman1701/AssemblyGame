@@ -3,6 +3,7 @@ using Emulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace Emulator.Compiler
 {
@@ -51,13 +52,12 @@ namespace Emulator.Compiler
                             if (e is CompilationException)
                             {
                                 CompilationException ce = (CompilationException)e;
-                                if (ce.Line == -1)
+                                if (ce.Line == -1 && ce.GetType() == typeof(ParameterParseException))
                                 {
-                                    ce.Line = (int)i;
+                                    throw new ParameterParseException((int)i, ce.Message + "Line: " + line);
                                 }
-                                throw;
                             }
-                            throw new CompilationException((int)i, "Could not parse line");
+                            throw new CompilationException((int)i, "Could not parse line: " + line);
                         }
                     }
                 }
@@ -206,10 +206,11 @@ namespace Emulator.Compiler
                 Parameter p;
                 if (type == ParameterType.NONE)
                 {
-                    throw new CompilationException((int)lineNum, "malformed parameter");
+                    throw new CompilationException((int)lineNum, "malformed parameter: " + line);
                 }
                 if (type == ParameterType.REGISTER)
                 {
+                    Debug.Log("REGPARAM: " + paramStrings[i]);     
                     p = new RegisterParam(paramStrings[i]);
                 } else if (type == ParameterType.NUMBER)
                 {
