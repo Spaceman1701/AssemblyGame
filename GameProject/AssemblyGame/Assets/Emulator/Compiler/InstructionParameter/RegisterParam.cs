@@ -1,5 +1,6 @@
 ﻿using Emulator.Compiler.CompileException;
 using Emulator.Execute;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Emulator.Compiler.InstructionParameter

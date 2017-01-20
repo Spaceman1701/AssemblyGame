@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -9,10 +10,23 @@ namespace Emulator.Compiler
         REGISTER, NUMBER, POINTER, LABEL, NONE
     }
 
-    public static class ParameterExtension
+    public static class ParameterTypeExtension
     {
         private static Regex pointerRegex = new Regex(@"\[(.*?)\]");
         private static string[] regNames = { "ax", "bx", "cx", "dx", "sp", "bp", "si", "di"};
+
+        public static ParameterType GetTypeFromString(string s)
+        {
+            foreach (ParameterType p in Enum.GetValues(typeof(ParameterType)))
+            {
+                if (p.isType(s))
+                {
+                    return p;
+                }
+            }
+            return ParameterType.NONE;
+        }
+
         public static bool isType(this ParameterType t, string pString)
         {
             switch (t)
@@ -37,25 +51,13 @@ namespace Emulator.Compiler
 
         private static bool isNumber(string pString)
         {
-            if (pString[0] == '(' && pString[pString.Length - 1] == ')' && pString.All(c => char.IsNumber(c) || c == '(' || c == ')' || c == '[' || c == ']'))
-            {
-                return true;
-            }
             ushort n;
             return ushort.TryParse(pString, out n);
         }
 
         private static bool isPointer(string pString)
         {
-            if (pString.Contains("("))
-            {
-                return false;
-            }
-            if (pString[0] == '[')
-            {
-                return true;
-            }
-            return pointerRegex.IsMatch(pString);
+            return pString.Contains('[') && pString.Contains(']');
         }
 
         private static bool isLabal(string pString) //improve later

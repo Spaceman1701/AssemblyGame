@@ -13,6 +13,14 @@ namespace Emulator.Compiler
         IDictionary<string, uint> labelMap;
         IDictionary<string, uint> procMap;
 
+        public Program(IList<Instruction> code, IDictionary<string, uint> labelMap, IDictionary<string, uint> procMap)
+        {
+            this.code = code;
+            this.labelMap = labelMap;
+            this.procMap = procMap;
+            Debug.Log(this);
+        }
+
         public Program(string rawProgram)
         {
             if (rawProgram[rawProgram.Length - 1] != '\n')
@@ -191,7 +199,7 @@ namespace Emulator.Compiler
                 {
                     throw new CompilationException((int)lineNum, "Expected parameters");
                 }
-                return new CompleteInstruction(inst, new Parameter[] { }, lineNum);
+                return new Instruction(inst, new Parameter[] { }, lineNum);
             }
             string[] paramStrings = components[1].Split(',');
             numParams = paramStrings.Length;
@@ -224,7 +232,7 @@ namespace Emulator.Compiler
                 }
                 parameters[i] = p;
             }
-            return new CompleteInstruction(inst, parameters, lineNum);
+            return new Instruction(inst, parameters, lineNum);
         }
 
 
@@ -266,10 +274,6 @@ namespace Emulator.Compiler
 
             foreach (Instruction i in code)
             {
-                if (i == null)
-                {
-                    //continue;
-                }
                 sb.AppendLine(i.ToString());
             }
             return sb.ToString();

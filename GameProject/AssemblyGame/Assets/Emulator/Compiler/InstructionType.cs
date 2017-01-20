@@ -85,7 +85,8 @@ namespace Emulator.Compiler
         [Params("R, M")] INC,
         [Params("R, M")] DEC,
         [Params("L")] LOOP,
-        [Params("N")] INT
+        [Params("N")] INT,
+        [Params("RM")] LEA
     }
 
     public static class InstructionTypeExtension
@@ -100,6 +101,12 @@ namespace Emulator.Compiler
             }
             return InstructionType.NONE;
         }
+
+        public static bool isInstruction(string s)
+        {
+            return fromString(s) != InstructionType.NONE;
+        }
+
         public static IList<ParameterType[]> Params(this InstructionType it)
         {
             return GetAttr(it).GetParamList();

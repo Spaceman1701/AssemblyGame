@@ -38,6 +38,12 @@ namespace Emulator.Compiler.InstructionParameter
             }
         }
 
+
+        public NumberParam(ushort num)
+        {
+            this.num = num;
+        }
+
         public ParameterType GetParamType()
         {
             return ParameterType.NUMBER;

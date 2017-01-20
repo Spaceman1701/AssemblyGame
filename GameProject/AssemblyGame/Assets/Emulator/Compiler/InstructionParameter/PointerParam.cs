@@ -14,6 +14,8 @@ namespace Emulator.Compiler.InstructionParameter
 
         private List<int> reg;
 
+        private Queue<string> outputQueue;
+
         public PointerParam(string ptr)
         {
             ptr = ptr.Trim();
@@ -42,6 +44,39 @@ namespace Emulator.Compiler.InstructionParameter
                 Debug.Log("pointer reg: " + offsetString);
                 register = new RegisterParam(offsetString).Reg;
                 reg.Add(register);
+            }
+        }
+
+        public PointerParam(string ptr, Dictionary<string, ushort> varMap)
+        {
+            ptr = ptr.Replace("+", " + ").Replace("-", " - ").Substring(1, ptr.Length);
+            Debug.Log(ptr);
+            string[] exp = ptr.Split(' ');
+            outputQueue = new Queue<string>();
+            Stack<string> operatorStack = new Stack<string>();
+            ushort temp;
+            for (int i = 0; i < exp.Length; i++)
+            {
+                string token = exp[i];
+                if (varMap.ContainsKey(token))
+                {
+                    token = varMap[token].ToString();
+                }
+                if (token == "+" || token == "-")
+                {
+                    operatorStack.Push(token);
+                } else if (ushort.TryParse(token, out temp))
+                {
+                    outputQueue.Enqueue(temp.ToString());
+                } else
+                {
+                    throw new Exception(token);
+                }
+            }
+
+            while (operatorStack.Count != 0)
+            {
+                outputQueue.Enqueue(operatorStack.Pop());
             }
         }
 
@@ -93,6 +128,14 @@ namespace Emulator.Compiler.InstructionParameter
             get
             {
                 return reg;
+            }
+        }
+
+        public Queue<string> ExpQueue
+        {
+            get
+            {
+                return outputQueue;
             }
         }
 

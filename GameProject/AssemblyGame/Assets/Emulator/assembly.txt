@@ -6,9 +6,9 @@
 	INPUT[2]
 .Code
 procstart main
-start: 
-	mov ax, (INPUT[0])
-	mov bx, (INPUT[1])
+start:
+	lea ax, [INPUT]
+	lea bx, [INPUT + 1]
 	int 1
 	mov ax, INPUT[0]
 	mov bx, INPUT[1]

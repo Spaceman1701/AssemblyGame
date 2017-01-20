@@ -167,13 +167,10 @@ namespace Emulator.Execute
             {
                 return;
             }
-            Instruction inst = currentProgram.GetInstruction(currentLine);
-            if (inst.GetType() == typeof(CompleteInstruction)) {
-                CompleteInstruction instruction = (CompleteInstruction)inst;
-
-                MethodInfo method = functions[instruction.GetInstructionType()];
-                method.Invoke(this, new System.Object[] {instruction.GetParams()});
-            }
+            Instruction instruction = currentProgram.GetInstruction(currentLine);
+            Debug.Log(instruction);
+            MethodInfo method = functions[instruction.GetInstructionType()];
+            method.Invoke(this, new System.Object[] {instruction.GetParams()});
 
             currentLine = nextLine;
         }
@@ -183,7 +180,7 @@ namespace Emulator.Execute
             interuptMap[key] = id;
         }
 
-        private ushort DereferenceNewPtr(PointerParam ptr)
+        private ushort DereferenceOld2(PointerParam ptr)
         {
             ushort location = (ushort)ptr.Base;
             if (ptr.HasRegisterOffset())
@@ -197,7 +194,7 @@ namespace Emulator.Execute
             return location;
         }
 
-        private ushort DereferencePtr(PointerParam ptr)
+        private ushort DereferencePtrOld(PointerParam ptr)
         {
             ushort v = ptr.Base;
 
@@ -207,6 +204,41 @@ namespace Emulator.Execute
             }
 
             return v;
+        }
+
+        private ushort DereferencePtr(PointerParam ptr)
+        {
+            Stack<ushort> stack = new Stack<ushort>();
+            Queue<string> readQ = new Queue<string>(ptr.ExpQueue);
+            while (readQ.Count != 0)
+            {
+                string value = readQ.Dequeue().Trim();
+                if (value == "+" || value == "-")
+                {
+                    Debug.Log(value + ", " + stack.Count);
+                    ushort right = stack.Pop();
+                    ushort left = stack.Pop();
+                    switch (value)
+                    {
+                        case "+": 
+                            stack.Push((ushort)(left + right));
+                            break;
+                        case "-":
+                            stack.Push((ushort)(left - right));
+                            break;
+                    }
+                    continue;
+                }
+                int reg = GetRegisterIndex(value);
+                if (reg != -1)
+                {
+                    stack.Push(registers[reg].Data);
+                    continue;
+                }
+                stack.Push(ushort.Parse(value));
+            }
+
+            return stack.Pop();
         }
 
         private ushort EvaluateValue(Parameter p)
