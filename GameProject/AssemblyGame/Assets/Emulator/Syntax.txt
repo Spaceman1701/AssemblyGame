@@ -1,0 +1,85 @@
+﻿---------------------
+Assembly info
+---------------------
+Registers
+---------------------
+General Purpose:
+ax, bx, cx, dx, si, di
+Pointer:
+sp, bp
+All Registers:
+ax, bx, cx, dx, sp, bp, si, di
+------------------------------------
+Instructions
+------------------------------------
+R = Register, N = Number, M = Memory Pointer, L = Label/Name
+mov R, R
+mov R, M
+mov M, R
+mov R, N
+mov M, N 
+
+add R, R
+add R, N
+
+sub R, R
+sub R, N
+
+div R
+div N
+
+mul R, R
+mul R, N
+
+cmp R, R
+cmp R, n
+
+jeq L
+jnq L
+jgt L
+jlt L
+jge L
+jle L
+jmp L
+
+push R
+pop R
+
+pushf
+popf
+
+and R, R
+and R, N
+
+or R, R
+or R, R
+
+xor R, N
+xor R, R
+
+not R
+
+call L
+ret
+
+procstart L
+procend L
+
+shl R, R
+shl R, N
+
+shr R, R
+shr R, N
+
+inc R
+inc M
+
+dec R
+dec M
+
+loop L
+
+int N
+
+lea R, M
+
