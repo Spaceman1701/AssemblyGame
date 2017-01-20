@@ -25,13 +25,13 @@ left_start:
 	mov dx, LEFT
 	push dx
 	call move
-	pop dx
+	inc sp
 	jmp start
 right_start: 
 	mov dx, RIGHT
 	push dx
 	call move
-	pop dx
+	inc sp
 	jmp start
 procend main
 
