@@ -18,7 +18,7 @@ namespace Emulator.Compiler
 
             IList<Token>[] data = tokens.Data;
 
-            ProcessDataSection(tokens.DataStart, tokens.DataEnd, data, varMap);
+            int requiredMemory = ProcessDataSection(tokens.DataStart, tokens.DataEnd, data, varMap);
             ProcessCodeSection(tokens.CodeStart, tokens.CodeEnd, tokens.Data, instructions, labelMap, procMap, varMap);
 
             return new Program(instructions, labelMap, procMap);
@@ -90,7 +90,7 @@ namespace Emulator.Compiler
             instructions.Add(instruction);
         }
 
-        private static void ProcessDataSection(int start, int end, IList<Token>[] lines, 
+        private static int ProcessDataSection(int start, int end, IList<Token>[] lines, 
             Dictionary<string, ushort> varMap)
         {
             int heapHead = 0;
@@ -107,6 +107,7 @@ namespace Emulator.Compiler
                     ProcessVarDeclaration(tokens, varMap);
                 }
             }
+            return heapHead;
         }
 
         private static int ProcessArrayDeclaration(IList<Token> tokens, Dictionary<string, ushort> arrayMap, int heapHead)
