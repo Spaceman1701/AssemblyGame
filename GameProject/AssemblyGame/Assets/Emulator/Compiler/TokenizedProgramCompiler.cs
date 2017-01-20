@@ -56,10 +56,6 @@ namespace Emulator.Compiler
             Dictionary<string, uint> procMap, Dictionary<string, ushort> varMap, uint executionLine)
         {
             InstructionType inst = InstructionTypeExtension.fromString(tokens[0].Data);
-            if (inst == InstructionType.NONE)
-            {
-                Debug.Log("string: " + tokens[0].Data);
-            }
             if (inst == InstructionType.PROCSTART)
             {
                 procMap.Add(tokens[1].Data, executionLine);
@@ -97,13 +93,14 @@ namespace Emulator.Compiler
         private static void ProcessDataSection(int start, int end, IList<Token>[] lines, 
             Dictionary<string, ushort> varMap)
         {
+            int heapHead = 0;
             for (int i = start; i < end; i++)
             {
                 IList<Token> tokens = lines[i];
                 Token first = tokens[0];
                 if (first.Type == Token.TokenType.ARRAY_DEC)
                 {
-                    ProcessArrayDeclaration(tokens, varMap);
+                    heapHead = ProcessArrayDeclaration(tokens, varMap, heapHead);
                 }
                 if (first.Type == Token.TokenType.VAR_DEC)
                 {
@@ -112,14 +109,15 @@ namespace Emulator.Compiler
             }
         }
 
-        private static void ProcessArrayDeclaration(IList<Token> tokens, Dictionary<string, ushort> arrayMap)
+        private static int ProcessArrayDeclaration(IList<Token> tokens, Dictionary<string, ushort> arrayMap, int heapHead)
         {
             string data = tokens[0].Data;
             int bracketIndex = data.IndexOf('[');
             int lengthDistance = data.Length - bracketIndex;
             int length = int.Parse(data.Substring(bracketIndex + 1, lengthDistance - 2));
             string name = data.Substring(0, bracketIndex);
-            arrayMap.Add(name, (ushort)length);
+            arrayMap.Add(name, (ushort)heapHead);
+            return heapHead + length;
         }
 
         private static void ProcessVarDeclaration(IList<Token> tokens, Dictionary<string, ushort> varMap)
