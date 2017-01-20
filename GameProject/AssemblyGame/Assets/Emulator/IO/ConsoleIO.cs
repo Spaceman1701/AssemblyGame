@@ -98,7 +98,7 @@ namespace Emulator.IO
 
         private void LoadProgram(string name, string fileLocation)
         {
-            Program p = new Program(ProgramLoader.LoadProgram(fileLocation));
+            Program p = TokenizedProgramCompiler.Compile(new TokenizedProgram(Preprocessor.Process(ProgramLoader.LoadProgram(fileLocation))));
             programs.Add(name, p);
         }
 

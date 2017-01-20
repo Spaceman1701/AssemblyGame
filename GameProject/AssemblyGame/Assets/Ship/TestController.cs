@@ -14,7 +14,7 @@ public class TestController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         string program = ProgramLoader.LoadProgram(Application.dataPath + "/Emulator/assembly.txt");
-        Program p = new Program(program);
+        Program p = TokenizedProgramCompiler.Compile(new TokenizedProgram(Preprocessor.Process(program)));
         eu = new ExecutionUnit(600);
         eu.RegisterInterrupt(0, MoveInterrupt);
         eu.RegisterInterrupt(1, KeyboardInterupt);

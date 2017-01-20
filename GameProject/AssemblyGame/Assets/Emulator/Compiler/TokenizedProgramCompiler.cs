@@ -56,6 +56,10 @@ namespace Emulator.Compiler
             Dictionary<string, uint> procMap, Dictionary<string, ushort> varMap, uint executionLine)
         {
             InstructionType inst = InstructionTypeExtension.fromString(tokens[0].Data);
+            if (inst == InstructionType.NONE)
+            {
+                Debug.Log("string: " + tokens[0].Data);
+            }
             if (inst == InstructionType.PROCSTART)
             {
                 procMap.Add(tokens[1].Data, executionLine);
@@ -79,6 +83,9 @@ namespace Emulator.Compiler
                         if (varMap.ContainsKey(tokens[i].Data))
                         {
                             p[i - 1] = new NumberParam(varMap[tokens[i].Data]); 
+                        } else
+                        {
+                            p[i - 1] = new LabelParam(tokens[i].Data); 
                         }
                         break;
                 }

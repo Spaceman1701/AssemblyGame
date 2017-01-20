@@ -26,15 +26,6 @@ namespace Emulator.Compiler
         public TokenizedProgram(string[] program)
         {
             Tokenize(program);
-            foreach (IList<Token> t in data)
-            {
-                string line = t[0].Line.ToString() + ": ";
-                foreach (Token token in t)
-                {
-                    line += token.ToString() + " ";
-                }
-                Debug.Log(line);
-            }
             CalcDataRange();
             CalcCodeRange();
         }
@@ -134,7 +125,7 @@ namespace Emulator.Compiler
             }
         }
 
-        public void Tokenize(string[] program)
+        private void Tokenize(string[] program)
         {
             numLines = program.Length;
 
@@ -145,8 +136,8 @@ namespace Emulator.Compiler
                 int lineNum = i + 1;
                 IList<Token> lineData = new List<Token>();
                 data[i] = lineData;
-                string[] tokenStrings = program[i].Split(TOKEN_SEP);
-                if (tokenStrings.Length == 0 || tokenStrings[0] == "")
+                string[] tokenStrings = program[i].Trim().Split(TOKEN_SEP);
+                if (tokenStrings.Length == 0 || tokenStrings[0].Trim() == "")
                 {
                     lineData.Add(new Token(Token.TokenType.NOP, "", lineNum));
                     continue;
@@ -154,19 +145,25 @@ namespace Emulator.Compiler
                 lineData.Add(ProcessFirstToken(tokenStrings[0], lineNum));
                 for (int j = 1; j < tokenStrings.Length; j++)
                 {
-                    string tString = tokenStrings[j];
-                    if (IsRegister(tString))
+                    if (tokenStrings[j] != "")
                     {
-                        lineData.Add(new Token(Token.TokenType.REG_ARG, tString, lineNum));
-                    } else if (IsNumber(tString))
-                    {
-                        lineData.Add(new Token(Token.TokenType.NUM_ARG, tString, lineNum));
-                    } else if (tString.Contains("["))
-                    {
-                        lineData.Add(new Token(Token.TokenType.PTR_ARG, tString, lineNum));
-                    } else
-                    {
-                        lineData.Add(new Token(Token.TokenType.LBL_ARG, tString, lineNum));
+                        string tString = tokenStrings[j];
+                        if (IsRegister(tString))
+                        {
+                            lineData.Add(new Token(Token.TokenType.REG_ARG, tString, lineNum));
+                        }
+                        else if (IsNumber(tString))
+                        {
+                            lineData.Add(new Token(Token.TokenType.NUM_ARG, tString, lineNum));
+                        }
+                        else if (tString.Contains("["))
+                        {
+                            lineData.Add(new Token(Token.TokenType.PTR_ARG, tString, lineNum));
+                        }
+                        else
+                        {
+                            lineData.Add(new Token(Token.TokenType.LBL_ARG, tString, lineNum));
+                        }
                     }
                 }
             }

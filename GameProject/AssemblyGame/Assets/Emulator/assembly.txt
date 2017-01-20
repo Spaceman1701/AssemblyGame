@@ -10,8 +10,8 @@ start:
 	lea ax, [INPUT]
 	lea bx, [INPUT + 1]
 	int 1
-	mov ax, INPUT[0]
-	mov bx, INPUT[1]
+	mov ax, [INPUT]
+	mov bx, [INPUT + 1]
 	cmp ax, TRUE
 	jeq left_start
 	cmp bx, TRUE

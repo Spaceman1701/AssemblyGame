@@ -168,7 +168,6 @@ namespace Emulator.Execute
                 return;
             }
             Instruction instruction = currentProgram.GetInstruction(currentLine);
-            Debug.Log(instruction);
             MethodInfo method = functions[instruction.GetInstructionType()];
             method.Invoke(this, new System.Object[] {instruction.GetParams()});
 
@@ -180,32 +179,6 @@ namespace Emulator.Execute
             interuptMap[key] = id;
         }
 
-        private ushort DereferenceOld2(PointerParam ptr)
-        {
-            ushort location = (ushort)ptr.Base;
-            if (ptr.HasRegisterOffset())
-            {
-                location += registers[ptr.Reg].Data;
-            }
-            else
-            {
-                location += ptr.FlatOffset;
-            }
-            return location;
-        }
-
-        private ushort DereferencePtrOld(PointerParam ptr)
-        {
-            ushort v = ptr.Base;
-
-            foreach (int reg in ptr.Registers)
-            {
-                v += registers[reg].Data;
-            }
-
-            return v;
-        }
-
         private ushort DereferencePtr(PointerParam ptr)
         {
             Stack<ushort> stack = new Stack<ushort>();
@@ -215,7 +188,6 @@ namespace Emulator.Execute
                 string value = readQ.Dequeue().Trim();
                 if (value == "+" || value == "-")
                 {
-                    Debug.Log(value + ", " + stack.Count);
                     ushort right = stack.Pop();
                     ushort left = stack.Pop();
                     switch (value)
@@ -604,7 +576,6 @@ namespace Emulator.Execute
             registers[BP].Data = registers[SP].Data;
             callStack.Push(nextLine);
             nextLine = currentProgram.TranslateCall(l);
-            Debug.Log(currentProgram.GetInstruction(nextLine + 1));
         }
 
         public void Ret(Parameter[] p)
@@ -653,6 +624,11 @@ namespace Emulator.Execute
         {
             NumberParam n = (NumberParam)p[0];
             interuptMap[n.Num].Invoke(this);
+        }
+
+        public void Lea(Parameter[] p)
+        {
+            registers[((RegisterParam)p[0]).Reg].Data = DereferencePtr((PointerParam)p[1]);
         }
     }
 }

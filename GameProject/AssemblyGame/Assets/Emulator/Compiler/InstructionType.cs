@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-
+using UnityEngine;
 
 namespace Emulator.Compiler
 {
@@ -94,7 +94,7 @@ namespace Emulator.Compiler
         public static InstructionType fromString(string s)
         {
             foreach (InstructionType t in Enum.GetValues(typeof(InstructionType))) {
-                if (t.ToString().ToLower().Equals(s))
+                if (t.ToString().ToLower().Equals(s.Trim()))
                 {
                     return t;
                 }

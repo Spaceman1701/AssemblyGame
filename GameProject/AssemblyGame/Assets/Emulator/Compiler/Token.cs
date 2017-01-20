@@ -19,7 +19,7 @@ namespace Emulator.Compiler
         public Token(TokenType t, string data, int line)
         {
             this.t = t;
-            this.data = data;
+            this.data = data.Trim();
             this.line = line;
         }
 

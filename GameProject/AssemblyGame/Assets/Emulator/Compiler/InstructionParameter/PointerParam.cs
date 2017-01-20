@@ -49,8 +49,8 @@ namespace Emulator.Compiler.InstructionParameter
 
         public PointerParam(string ptr, Dictionary<string, ushort> varMap)
         {
-            ptr = ptr.Replace("+", " + ").Replace("-", " - ").Substring(1, ptr.Length);
-            Debug.Log(ptr);
+            ptr = ptr.Replace("+", " + ").Replace("-", " - ");
+            ptr = ptr.Substring(1, ptr.Length - 2);
             string[] exp = ptr.Split(' ');
             outputQueue = new Queue<string>();
             Stack<string> operatorStack = new Stack<string>();
@@ -68,6 +68,8 @@ namespace Emulator.Compiler.InstructionParameter
                 } else if (ushort.TryParse(token, out temp))
                 {
                     outputQueue.Enqueue(temp.ToString());
+                } else if (ExecutionUnit.GetRegisterIndex(token) != -1) {
+                    outputQueue.Enqueue(token);
                 } else
                 {
                     throw new Exception(token);
