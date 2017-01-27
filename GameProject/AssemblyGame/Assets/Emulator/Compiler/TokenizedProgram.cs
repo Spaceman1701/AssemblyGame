@@ -186,7 +186,7 @@ namespace Emulator.Compiler
         private bool IsNumber(string data)
         {
             ushort n;
-            return ushort.TryParse(data, out n);
+            return Utils.TryParse(data, out n);
         }
 
         private Token ProcessFirstToken(string data, int line)

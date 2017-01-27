@@ -53,7 +53,7 @@ namespace Emulator.Compiler
         private static bool isNumber(string pString)
         {
             ushort n;
-            return ushort.TryParse(pString, out n);
+            return Utils.TryParse(pString, out n);
         }
 
         private static bool isPointer(string pString)

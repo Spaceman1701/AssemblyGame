@@ -35,7 +35,7 @@ namespace Emulator.Compiler.InstructionParameter
                 if (token == "+" || token == "-")
                 {
                     operatorStack.Push(token);
-                } else if (ushort.TryParse(token, out temp))
+                } else if (Utils.TryParse(token, out temp))
                 {
                     outputQueue.Enqueue(temp.ToString());
                 } else if (ExecutionUnit.GetRegisterIndex(token) != -1) {
@@ -55,49 +55,6 @@ namespace Emulator.Compiler.InstructionParameter
             while (operatorStack.Count != 0)
             {
                 outputQueue.Enqueue(operatorStack.Pop());
-            }
-        }
-
-        private void ParseNew(string ptr)
-        {
-            ptr = ptr.Trim().Substring(1, ptr.Length - 1);
-            string exp = CleanExpression(ptr);
-
-            reg = new List<int>();
-            baseValue = 0;
-            if (exp.Contains("+"))
-            {
-                string[] split = exp.Split('+');
-                foreach (string s in split)
-                {
-                    Debug.Log(s);
-                    if (ExecutionUnit.GetRegisterIndex(s) != -1)
-                    {
-                        reg.Add(ExecutionUnit.GetRegisterIndex(s));
-                    } else
-                    {
-                        baseValue += ushort.Parse(s);
-                    }
-                }
-            } else if (exp.Contains("-"))
-            {
-                string[] split = exp.Split('-');
-                int numReg = 0;
-                foreach (string s in split)
-                {
-                    if (ExecutionUnit.GetRegisterIndex(s) != -1)
-                    {
-                        if (numReg > 0)
-                        {
-                            throw new ParameterParseException(-1, "Cannot subtract registers");
-                        }
-                        reg.Add(ExecutionUnit.GetRegisterIndex(s));
-                    }
-                    else
-                    {
-                        baseValue -= ushort.Parse(s);
-                    }
-                }
             }
         }
 

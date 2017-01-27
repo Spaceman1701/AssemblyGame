@@ -180,12 +180,12 @@ namespace Emulator.Compiler
             try
             {
                 string name = tokens[1].Data;
-                ushort value = ushort.Parse(tokens[2].Data);
+                ushort value = Utils.Parse(tokens[2].Data);
                 varMap.Add(name, value);
             }
             catch (Exception e)
             {
-                throw new CompilationException(tokens[0].Line, ErrorCode.Instance.GetMessage("MALFORMED_VAR_DEC"));
+                throw;// new CompilationException(tokens[0].Line, ErrorCode.Instance.GetMessage("MALFORMED_VAR_DEC"));
             }
         }
 

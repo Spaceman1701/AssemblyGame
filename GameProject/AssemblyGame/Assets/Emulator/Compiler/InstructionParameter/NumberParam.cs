@@ -10,7 +10,7 @@ namespace Emulator.Compiler.InstructionParameter
 
         public NumberParam(string s, int line)
         { 
-            if (!ushort.TryParse(s, out num))
+            if (!Utils.TryParse(s, out num))
             {
                 throw new ParameterParseException(line, ErrorCode.Instance.GetMessage("BAD_NUMBER"));
             }

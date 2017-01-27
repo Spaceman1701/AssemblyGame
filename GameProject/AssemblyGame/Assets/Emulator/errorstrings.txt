@@ -1,7 +1,7 @@
 ﻿NO_CODE_SECTION="Missing Code Section."
 NO_DATA_SECTION="Missing Data Section."
 
-MALFORMED_PARAM="Malformed Parameter:"
+MALFORMED_PARAMETER="Malformed Parameter:"
 
 BAD_POINTER="Pointer could not be parsed:"
 BAD_NUMBER="Number could not be parsed:"
