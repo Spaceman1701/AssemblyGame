@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Assets.Emulator
+namespace Emulator
 {
     class ErrorCode
     {

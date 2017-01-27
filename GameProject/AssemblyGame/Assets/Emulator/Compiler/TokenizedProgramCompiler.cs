@@ -1,5 +1,4 @@
-﻿using Assets.Emulator;
-using Emulator.Compiler.CompileException;
+﻿using Emulator.Compiler.CompileException;
 using Emulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;

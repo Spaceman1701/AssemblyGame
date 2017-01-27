@@ -1,5 +1,4 @@
-﻿using Assets.Emulator;
-using Emulator.Compiler.CompileException;
+﻿using Emulator.Compiler.CompileException;
 using Emulator.Execute;
 using System.Collections.Generic;
 using UnityEngine;
