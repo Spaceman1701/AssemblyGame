@@ -1,0 +1,20 @@
+﻿NO_CODE_SECTION="Missing Code Section."
+NO_DATA_SECTION="Missing Data Section."
+
+MALFORMED_PARAM="Malformed Parameter:"
+
+BAD_POINTER="Pointer could not be parsed:"
+BAD_NUMBER="Number could not be parsed:"
+BAD_REGISTER="Register could not be parsed:"
+BAD_LABEL="Label could not be parsed:"
+
+MALFORMED_INSTRUCTION="Malformed Instruction:"
+
+MALFORMED_ARRAY_DEC="Malformed array declaration:"
+
+MALFORMED_VAR_DEC="Malformed variable declaration:"
+
+WRONG_NUM_PARAMS="Incorrect number of parameters:"
+WRONG_PARAM_TYPE="Invalid parameter types for instruction:"
+
+OVER_REG_MATH_LIMIT="Too many reigsters used in pointer calculation:"

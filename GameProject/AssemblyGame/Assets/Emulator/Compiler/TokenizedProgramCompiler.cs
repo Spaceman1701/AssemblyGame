@@ -1,4 +1,6 @@
-﻿using Emulator.Compiler.InstructionParameter;
+﻿using Assets.Emulator;
+using Emulator.Compiler.CompileException;
+using Emulator.Compiler.InstructionParameter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +58,10 @@ namespace Emulator.Compiler
             Dictionary<string, uint> procMap, Dictionary<string, ushort> varMap, uint executionLine)
         {
             InstructionType inst = InstructionTypeExtension.fromString(tokens[0].Data);
+            if (inst == InstructionType.NONE)
+            {
+                throw new CompilationException(tokens[0].Line, ErrorCode.Instance.GetMessage("MALFORMED_INSTRUCTION"));
+            }
             if (inst == InstructionType.PROCSTART)
             {
                 procMap.Add(tokens[1].Data, executionLine);
@@ -67,13 +73,13 @@ namespace Emulator.Compiler
                 switch(t)
                 {
                     case ParameterType.REGISTER:
-                        p[i - 1] = new RegisterParam(tokens[i].Data);
+                        p[i - 1] = new RegisterParam(tokens[i].Data, tokens[i].Line);
                         break;
                     case ParameterType.POINTER:
-                        p[i - 1] = new PointerParam(tokens[i].Data, varMap);
+                        p[i - 1] = new PointerParam(tokens[i].Data, varMap, tokens[i].Line);
                         break;
                     case ParameterType.NUMBER:
-                        p[i - 1] = new NumberParam(tokens[i].Data);
+                        p[i - 1] = new NumberParam(tokens[i].Data, tokens[i].Line);
                         break;
                     case ParameterType.LABEL:
                         if (varMap.ContainsKey(tokens[i].Data))
@@ -84,10 +90,53 @@ namespace Emulator.Compiler
                             p[i - 1] = new LabelParam(tokens[i].Data); 
                         }
                         break;
+                    default:
+                        throw new CompilationException(tokens[i].Line, ErrorCode.Instance.GetMessage("MALFORMED_PARAMETER"));
                 }
             }
+            CheckParameters(inst, p, tokens[0].Line);
             Instruction instruction = new Instruction(inst, p, executionLine);
             instructions.Add(instruction);
+        }
+
+
+        private static void CheckParameters(InstructionType i, Parameter[] p, int line)
+        {
+            int numParams = i.NumParams();
+            IList<ParameterType[]> possibleParams = i.Params();
+            if (p.Length != numParams)
+            {
+                throw new CompilationException(line, 
+                    ErrorCode.Instance.GetMessageExpectedFound("WRONG_NUM_PARAMS", numParams, p.Length));
+            }
+            bool foundMatch = false;
+            foreach (ParameterType[] expected in possibleParams) //TODO: simplify this...
+            {
+                bool isMatch = true;
+                for (int j = 0; j < expected.Length; j++)
+                {
+                    if (expected[j] != p[j].GetParamType())
+                    {
+                        isMatch = false;
+                    }
+                }
+                if (isMatch)
+                {
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if (!foundMatch)
+            {
+                ParameterType[] pt = { ParameterType.NONE, ParameterType.NONE };
+
+                for (int j = 0; j < p.Length; j++)
+                {
+                    pt[j] = p[j].GetParamType();
+                }
+
+                throw new CompilationException(line, ErrorCode.Instance.GetMessage("WRONG_PARAM_TYPE", pt[0], pt[1]));
+            }
         }
 
         private static int ProcessDataSection(int start, int end, IList<Token>[] lines, 
@@ -112,20 +161,33 @@ namespace Emulator.Compiler
 
         private static int ProcessArrayDeclaration(IList<Token> tokens, Dictionary<string, ushort> arrayMap, int heapHead)
         {
-            string data = tokens[0].Data;
-            int bracketIndex = data.IndexOf('[');
-            int lengthDistance = data.Length - bracketIndex;
-            int length = int.Parse(data.Substring(bracketIndex + 1, lengthDistance - 2));
-            string name = data.Substring(0, bracketIndex);
-            arrayMap.Add(name, (ushort)heapHead);
-            return heapHead + length;
+            try
+            {
+                string data = tokens[0].Data;
+                int bracketIndex = data.IndexOf('[');
+                int lengthDistance = data.Length - bracketIndex;
+                int length = int.Parse(data.Substring(bracketIndex + 1, lengthDistance - 2));
+                string name = data.Substring(0, bracketIndex);
+                arrayMap.Add(name, (ushort)heapHead);
+                return heapHead + length;
+            } catch (Exception e)
+            {
+                throw new CompilationException(tokens[0].Line, ErrorCode.Instance.GetMessage("MALFORMED_ARRAY_DEC"));
+            }
         }
 
         private static void ProcessVarDeclaration(IList<Token> tokens, Dictionary<string, ushort> varMap)
         {
-            string name = tokens[1].Data;
-            ushort value = ushort.Parse(tokens[2].Data);
-            varMap.Add(name, value);
+            try
+            {
+                string name = tokens[1].Data;
+                ushort value = ushort.Parse(tokens[2].Data);
+                varMap.Add(name, value);
+            }
+            catch (Exception e)
+            {
+                throw new CompilationException(tokens[0].Line, ErrorCode.Instance.GetMessage("MALFORMED_VAR_DEC"));
+            }
         }
 
 

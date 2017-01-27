@@ -4,6 +4,7 @@ using UnityEngine;
 using Emulator.Execute;
 using Emulator.Compiler;
 using Emulator.IO;
+using Assets.Emulator;
 
 public class TestController : MonoBehaviour {
 
@@ -20,6 +21,8 @@ public class TestController : MonoBehaviour {
         eu.RegisterInterrupt(1, KeyboardInterupt);
         eu.SetProgram(p);
         eu.Step(); //procstart main
+
+        ErrorCode e = ErrorCode.Instance;
     }
 	
 	// Update is called once per frame

@@ -1,4 +1,6 @@
-﻿using Emulator.Execute;
+﻿using Assets.Emulator;
+using Emulator.Compiler.CompileException;
+using Emulator.Execute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +47,10 @@ namespace Emulator.Compiler
                     return; //found both values
                 }
             }
+            if (dataStart == -1)
+            {
+                throw new CompilationException(0, ErrorCode.Instance.GetMessage("NO_DATA_SECTION"));
+            }
             dataEnd = data.Length;
         }
 
@@ -61,6 +67,10 @@ namespace Emulator.Compiler
                     codeEnd = i;
                     return; //found both values
                 }
+            }
+            if (codeStart == -1)
+            {
+                throw new CompilationException(0, ErrorCode.Instance.GetMessage("NO_CODE_SECTION"));
             }
             codeEnd = data.Length;
         }

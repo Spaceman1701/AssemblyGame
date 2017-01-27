@@ -1,4 +1,5 @@
-﻿using Emulator.Compiler.CompileException;
+﻿using Assets.Emulator;
+using Emulator.Compiler.CompileException;
 using Emulator.Execute;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,12 @@ namespace Emulator.Compiler.InstructionParameter
     {
         private int reg;
 
-        public RegisterParam(string reg)
+        public RegisterParam(string reg, int line)
         {
             this.reg = ExecutionUnit.GetRegisterIndex(reg.Trim().ToLower());
             if (this.reg == -1)
             {
-                throw new ParameterParseException(-1, "Could not parse register reference: " + reg);
+                throw new ParameterParseException(line, ErrorCode.Instance.GetMessage("BAD_REGISTER"));
             }
         }
 

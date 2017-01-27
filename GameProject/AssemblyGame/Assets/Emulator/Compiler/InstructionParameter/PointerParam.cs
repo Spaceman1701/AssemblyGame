@@ -1,4 +1,5 @@
-﻿using Emulator.Compiler.CompileException;
+﻿using Assets.Emulator;
+using Emulator.Compiler.CompileException;
 using Emulator.Execute;
 using System;
 using System.Collections.Generic;
@@ -16,38 +17,7 @@ namespace Emulator.Compiler.InstructionParameter
 
         private Queue<string> outputQueue;
 
-        public PointerParam(string ptr)
-        {
-            ptr = ptr.Trim();
-            reg = new List<int>();
-            if (ptr[0] == '[')
-            {
-                ParseNew(ptr);
-                return;
-            }
-            int startOffset = ptr.IndexOf('[');
-            int endIndex = ptr.Length - 2;
-            int length = ptr.Length;
-
-
-            string baseString = ptr.Substring(0, startOffset);
-            if (!ushort.TryParse(baseString, out baseValue))
-            {
-                throw new ParameterParseException(-1, "Could not parse memory pointer");
-            }
-            Debug.Log(endIndex - startOffset + 1);
-
-            string offsetString = ptr.Substring(startOffset + 1, endIndex - startOffset);
-
-            if (!ushort.TryParse(offsetString, out offset))
-            {
-                Debug.Log("pointer reg: " + offsetString);
-                register = new RegisterParam(offsetString).Reg;
-                reg.Add(register);
-            }
-        }
-
-        public PointerParam(string ptr, Dictionary<string, ushort> varMap)
+        public PointerParam(string ptr, Dictionary<string, ushort> varMap, int line)
         {
             ptr = ptr.Replace("+", " + ").Replace("-", " - ");
             ptr = ptr.Substring(1, ptr.Length - 2);
@@ -55,6 +25,7 @@ namespace Emulator.Compiler.InstructionParameter
             outputQueue = new Queue<string>();
             Stack<string> operatorStack = new Stack<string>();
             ushort temp;
+            int numRegisters = 0;
             for (int i = 0; i < exp.Length; i++)
             {
                 string token = exp[i];
@@ -69,11 +40,17 @@ namespace Emulator.Compiler.InstructionParameter
                 {
                     outputQueue.Enqueue(temp.ToString());
                 } else if (ExecutionUnit.GetRegisterIndex(token) != -1) {
+                    numRegisters++;
                     outputQueue.Enqueue(token);
                 } else
                 {
-                    throw new Exception(token);
+                    throw new ParameterParseException(line, ErrorCode.Instance.GetMessage("BAD_POINTER"));
                 }
+            }
+
+            if (numRegisters > 2) //make this not a magic number
+            {
+                throw new ParameterParseException(line, ErrorCode.Instance.GetMessageExpectedFound("OVER_REG_MATH_LIMIT", 2, numRegisters));
             }
 
             while (operatorStack.Count != 0)
