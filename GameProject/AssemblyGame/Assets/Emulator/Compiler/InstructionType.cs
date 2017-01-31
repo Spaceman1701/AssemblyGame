@@ -67,9 +67,9 @@ namespace Emulator.Compiler
         [Params("RR, RN, RM, MR", 1)]MOV,
         [Params("RR, RN", 1)]ADD,
         [Params("RR, RN", 1)]SUB,
-        [Params("R, N", 3)]DIV,
-        [Params("RR, RN", 2)]MUL,
-        [Params("RR, RN", 1)]CMP,
+        [Params("R, N", 20)]DIV,
+        [Params("RR, RN", 15)]MUL,
+        [Params("RR, RN", 3)]CMP,
         [Params("L", 1)]JEQ,
         [Params("L", 1)]JNQ,
         [Params("L", 1)]JGT,
@@ -85,18 +85,18 @@ namespace Emulator.Compiler
         [Params("RR, RN", 1)]OR,
         [Params("RR, RN", 1)]XOR,
         [Params("R", 1)]NOT,
-        [Params("L", 1)]CALL,
-        [Params("", 1)]RET,
-        [Params("L", 1)]PROCSTART,
-        [Params("L", 1)]PROCEND,
-        [Params("", 1)]NONE,
+        [Params("L", 3)]CALL,
+        [Params("", 3)]RET,
+        [Params("L", 0)]PROCSTART,
+        [Params("L", 0)]PROCEND,
+        [Params("", 0)]NONE,
         [Params("RR, RN", 1)] SHL,
         [Params("RR, RN", 1)] SHR,
         [Params("R, M", 1)] INC,
         [Params("R, M", 1)] DEC,
         [Params("L", 1)] LOOP,
         [Params("N", 1)] INT,
-        [Params("RM", 2)] LEA
+        [Params("RM", 3)] LEA
     }
 
     public static class InstructionTypeExtension

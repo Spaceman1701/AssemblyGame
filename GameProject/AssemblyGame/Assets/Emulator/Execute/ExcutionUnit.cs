@@ -24,7 +24,7 @@ namespace Emulator.Execute
         private const int SI = 6;
         private const int DI = 7;
 
-        public const int POINTER_DEFERENCE_COST = 1;
+        public const int POINTER_DEFERENCE_COST = 2;
 
         public static int GetRegisterIndex(string name)
         {
