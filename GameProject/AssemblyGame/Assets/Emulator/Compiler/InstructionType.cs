@@ -9,8 +9,9 @@ namespace Emulator.Compiler
     {
         IList<ParameterType[]> paramList;
         int numParams;
+        int cycles;
 
-        internal Params(string p)
+        internal Params(string p, int cycles)
         {
             string[] paramArray = p.Replace(" ", "").Split(',');
             paramList = new List<ParameterType[]>();
@@ -39,6 +40,7 @@ namespace Emulator.Compiler
                 }
                 paramList.Add(array);
             }
+            this.cycles = cycles;
         }
 
         public IList<ParameterType[]> GetParamList()
@@ -50,43 +52,51 @@ namespace Emulator.Compiler
         {
             return numParams;
         }
+
+        public int Cycles
+        {
+            get
+            {
+                return cycles;
+            }
+        }
     }
 
     public enum InstructionType
     {
-        [Params("RR, RN, RM, MR")]MOV,
-        [Params("RR, RN")]ADD,
-        [Params("RR, RN")]SUB,
-        [Params("R, N")]DIV,
-        [Params("RR, RN")]MUL,
-        [Params("RR, RN")]CMP,
-        [Params("L")]JEQ,
-        [Params("L")]JNQ,
-        [Params("L")]JGT,
-        [Params("L")]JLT,
-        [Params("L")]JGE,
-        [Params("L")]JLE,
-        [Params("L")]JMP,
-        [Params("R")]PUSH,
-        [Params("R")]POP,
-        [Params("")]PUSHF,
-        [Params("")]POPF,
-        [Params("RR, RN")]AND,
-        [Params("RR, RN")]OR,
-        [Params("RR, RN")]XOR,
-        [Params("R")]NOT,
-        [Params("L")]CALL,
-        [Params("")]RET,
-        [Params("L")]PROCSTART,
-        [Params("L")]PROCEND,
-        [Params("")]NONE,
-        [Params("RR, RN")] SHL,
-        [Params("RR, RN")] SHR,
-        [Params("R, M")] INC,
-        [Params("R, M")] DEC,
-        [Params("L")] LOOP,
-        [Params("N")] INT,
-        [Params("RM")] LEA
+        [Params("RR, RN, RM, MR", 1)]MOV,
+        [Params("RR, RN", 1)]ADD,
+        [Params("RR, RN", 1)]SUB,
+        [Params("R, N", 3)]DIV,
+        [Params("RR, RN", 2)]MUL,
+        [Params("RR, RN", 1)]CMP,
+        [Params("L", 1)]JEQ,
+        [Params("L", 1)]JNQ,
+        [Params("L", 1)]JGT,
+        [Params("L", 1)]JLT,
+        [Params("L", 1)]JGE,
+        [Params("L", 1)]JLE,
+        [Params("L", 1)]JMP,
+        [Params("R", 1)]PUSH,
+        [Params("R", 1)]POP,
+        [Params("", 1)]PUSHF,
+        [Params("", 1)]POPF,
+        [Params("RR, RN", 1)]AND,
+        [Params("RR, RN", 1)]OR,
+        [Params("RR, RN", 1)]XOR,
+        [Params("R", 1)]NOT,
+        [Params("L", 1)]CALL,
+        [Params("", 1)]RET,
+        [Params("L", 1)]PROCSTART,
+        [Params("L", 1)]PROCEND,
+        [Params("", 1)]NONE,
+        [Params("RR, RN", 1)] SHL,
+        [Params("RR, RN", 1)] SHR,
+        [Params("R, M", 1)] INC,
+        [Params("R, M", 1)] DEC,
+        [Params("L", 1)] LOOP,
+        [Params("N", 1)] INT,
+        [Params("RM", 2)] LEA
     }
 
     public static class InstructionTypeExtension
@@ -131,6 +141,11 @@ namespace Emulator.Compiler
         private static MemberInfo ForValue(InstructionType p)
         {
             return typeof(InstructionType).GetField(Enum.GetName(typeof(InstructionType), p));
+        }
+
+        public static int GetCycles(this InstructionType it)
+        {
+            return GetAttr(it).Cycles;
         }
     }
 }

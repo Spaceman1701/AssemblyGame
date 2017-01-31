@@ -24,6 +24,8 @@ namespace Emulator.Execute
         private const int SI = 6;
         private const int DI = 7;
 
+        public const int POINTER_DEFERENCE_COST = 1;
+
         public static int GetRegisterIndex(string name)
         {
             switch (name)
@@ -55,6 +57,7 @@ namespace Emulator.Execute
 
         private IDictionary<ushort, InteruptDelegate> interuptMap;
 
+        private int currentStepCost;
 
         int numCalls;
         int numPops;
@@ -160,14 +163,29 @@ namespace Emulator.Execute
             return registers[register];
         }
 
+        public int RunForCycles(int cycles)
+        {
+            int usedCycles = 0;
+            while (usedCycles < cycles)
+            {
+                Step();
+                usedCycles += currentStepCost;
+            }
+            return usedCycles - cycles;
+        }
+
         public void Step()
         {
+            currentStepCost = 0;
             nextLine = currentLine + 1;
             if (currentProgram == null)
             {
                 return;
             }
             Instruction instruction = currentProgram.GetInstruction(currentLine);
+
+            currentStepCost += instruction.GetInstructionType().GetCycles();
+
             MethodInfo method = functions[instruction.GetInstructionType()];
             method.Invoke(this, new System.Object[] {instruction.GetParams()});
 
@@ -181,6 +199,7 @@ namespace Emulator.Execute
 
         private ushort DereferencePtr(PointerParam ptr)
         {
+            currentStepCost += POINTER_DEFERENCE_COST;
             Stack<ushort> stack = new Stack<ushort>();
             Queue<string> readQ = new Queue<string>(ptr.ExpQueue);
             while (readQ.Count != 0)
