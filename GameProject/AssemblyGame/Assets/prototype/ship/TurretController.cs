@@ -14,7 +14,7 @@ namespace prototype.ship
 
         void Start()
         {
-            rotator = new Rotator(multiplier, Vector3.up);
+            rotator = new Rotator(multiplier, Vector3.forward);
         }
 
         public int Id

@@ -38,7 +38,10 @@ namespace prototype.ship
 
         public void FireGun()
         {
-
+            GameObject projectile = projectilePrefab[fireMode];
+            GameObject instance = Instantiate(projectile);
+            IProjectileController pc = instance.GetComponentInChildren<IProjectileController>();
+            pc.Fire(transform, 1);
         }
 
         public void SetFireMode(int mode)
