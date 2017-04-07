@@ -10,6 +10,7 @@ namespace prototype.ship
         public int cooldownTime;
         public int fireMode;
         public int id;
+        public float projectileSpeed = 1;
 
         // Use this for initialization
         void Start()
@@ -41,7 +42,7 @@ namespace prototype.ship
             GameObject projectile = projectilePrefab[fireMode];
             GameObject instance = Instantiate(projectile);
             IProjectileController pc = instance.GetComponentInChildren<IProjectileController>();
-            pc.Fire(transform, 1);
+            pc.Fire(transform, projectileSpeed);
         }
 
         public void SetFireMode(int mode)

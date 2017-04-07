@@ -7,7 +7,7 @@ namespace prototype.projectile
 {
     public class LinearProjectileController : MonoBehaviour, IProjectileController
     {
-        public float speed = 1;
+        public float speed = 10;
         public float duration = 10;
 
         public void Fire(Transform initalTransform, float initialSpeed)
@@ -26,7 +26,7 @@ namespace prototype.projectile
         // Update is called once per frame
         void Update()
         {
-            transform.position += transform.up * speed;
+            transform.position += transform.up * speed * Time.deltaTime;
             duration -= 1 * Time.deltaTime;
 
             if (duration <= 0)
