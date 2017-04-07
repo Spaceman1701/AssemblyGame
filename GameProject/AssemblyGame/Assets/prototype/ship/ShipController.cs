@@ -48,6 +48,7 @@ namespace prototype.ship
             TurretController turret;
             if ((turret = GetComponentByID(id, turrets)) != null)
             {
+                Debug.Log(turret.id + ", " + turret.rotator);
                 turret.SetRotation(direction, speed);
             } else
             {

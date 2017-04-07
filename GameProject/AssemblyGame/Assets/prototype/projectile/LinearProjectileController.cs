@@ -8,6 +8,7 @@ namespace prototype.projectile
     public class LinearProjectileController : MonoBehaviour, IProjectileController
     {
         public float speed = 1;
+        public float duration = 10;
 
         public void Fire(Transform initalTransform, float initialSpeed)
         {
@@ -26,6 +27,12 @@ namespace prototype.projectile
         void Update()
         {
             transform.position += transform.up * speed;
+            duration -= 1 * Time.deltaTime;
+
+            if (duration <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
