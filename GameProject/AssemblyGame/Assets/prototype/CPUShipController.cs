@@ -3,9 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.prototype
+namespace prototype
 {
-    class CPUShipController : ShipController
+    class CPUShipController : ship.ShipController
     {
+        protected override void DoStart()
+        {
+            health = 50;
+        }
+
+        protected override void DoUpdate()
+        {
+            
+        }
     }
 }

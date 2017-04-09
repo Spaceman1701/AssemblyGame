@@ -12,6 +12,10 @@ namespace prototype
         public int rotationSpeed;
         public int currentGun;
 
+        protected override void DoStart()
+        {
+            health = 100;
+        }
 
         public void SelectGun()
         {

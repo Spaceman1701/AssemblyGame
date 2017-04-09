@@ -15,19 +15,24 @@ namespace prototype.ship
         protected TurretController[] turrets;
         protected GunController[] guns;
 
+        public float health;
+
         void Start()
         {
             turrets = GetComponentsInChildren<TurretController>();
             guns = GetComponentsInChildren<GunController>();
             rotator = new Rotator(turnMultipiler, Vector3.forward);
+            DoStart();
         }
 
         void Update()
         {
-            rotator.DoRotation(transform);
             DoUpdate();
+            rotator.DoRotation(transform);
             transform.position += transform.right * speed * speedMultipler;
         }
+
+        protected abstract void DoStart();
 
         protected abstract void DoUpdate();
 
